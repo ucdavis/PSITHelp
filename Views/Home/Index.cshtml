@@ -4,5 +4,13 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <ul style="list-style-type: none">
+        <li><a asp-action="NewTicket" asp-controller="WorkOrders">Submit new ticket</a></li>
+        <li><a asp-action="Index" asp-controller="WorkOrders">My Work Orders</a></li>
+        <li><a asp-action="New" asp-controller="Users">Request new PS User</a></li>
+        <li><a asp-action="Rate" asp-controller="WorkOrders">Rate Completed Service</a></li>
+        <li><hr /></li>
+        <li><h3>Staff Options</h3></li>
+        <li><a asp-action="Index" asp-controller="Staff">Staff Home</a></li>
+    </ul>
 </div>

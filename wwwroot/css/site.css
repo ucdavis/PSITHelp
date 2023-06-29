@@ -8,6 +8,18 @@ html {
   }
 }
 
+.nav-link:hover {
+    background-color: #ffbf00;
+    color: #022851 !important;
+    font-weight: bold;
+}
+
+.navbar-nav {
+    background: #4C5D79;
+    padding: 0.24em 0.3em 0.25em;
+    font-weight: bold;
+}
+
 html {
   position: relative;
   min-height: 100%;
