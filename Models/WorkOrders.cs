@@ -59,6 +59,8 @@ namespace ITHelp.Models
             }
         }
 
+        [ForeignKey("WOId")]
+        public ICollection<Files> Attachments { get; set; }
 
     }
 }

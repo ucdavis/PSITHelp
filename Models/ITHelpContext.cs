@@ -93,6 +93,15 @@ namespace ITHelp.Models
                 entity.HasNoKey();                
             });
 
+            modelBuilder.Entity<Files>(entity =>
+            {
+                entity.ToTable("wo_files");
+                entity.Property(e => e.Id).HasColumnName("attach_id");
+                entity.Property(e => e.WOId).HasColumnName("wo_id");
+                entity.Property(e => e.Name).HasColumnName("attach_name");
+                entity.Property(e => e.Extension).HasColumnName("file_ext");
+            });
+
             
         }
           

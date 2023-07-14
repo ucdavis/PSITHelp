@@ -40,6 +40,7 @@ namespace ITHelp.Controllers
                 .Include(w => w.StatusTranslate)
                 .Include(w => w.Requester)
                 .Include(w => w.Tech)
+                .Include(w => w.Attachments)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (workOrders == null)
             {

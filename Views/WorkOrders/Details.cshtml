@@ -95,6 +95,24 @@
     @if (this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value == Model.SubmittedBy)
     {
         <div>Only shows if user == submitted by</div>
-        <div>Link to hardward release (may not need?????)</div>
-    }    
+        <div>Link to hardware release (may not need?????)</div>
+    }   
+    <div>
+        <hr />
+        @if (Model.Attachments.Any())
+        {
+            <table class="table table-striped table-info">
+                <thead>
+                    <tr class="table-primary"><th>Attachments</th></tr>               
+                </thead>
+                <tbody>
+                    @foreach (var attach in Model.Attachments)
+                    {
+                        <tr><td>@attach.Name</td></tr>
+                    }
+                </tbody>
+            </table>
+        }
+        <a asp-action="addFile" asp-route-id="Id" class="btn btn-info">Add New Attachment</a>
+    </div>
 </div>
