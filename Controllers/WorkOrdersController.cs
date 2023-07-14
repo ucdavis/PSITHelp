@@ -38,6 +38,8 @@ namespace ITHelp.Controllers
 
             var workOrders = await _context.WorkOrders
                 .Include(w => w.StatusTranslate)
+                .Include(w => w.Requester)
+                .Include(w => w.Tech)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (workOrders == null)
             {
