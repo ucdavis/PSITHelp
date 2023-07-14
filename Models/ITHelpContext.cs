@@ -53,10 +53,10 @@ namespace ITHelp.Models
             
             modelBuilder.Entity<Employee>(entity =>
             {
-                entity.ToTable("employees");
+                entity.ToTable("cats_employees_all");
 
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).HasColumnName("ucpath_id");
+                entity.Property(e => e.Id).HasColumnName("employee_id");
                 entity.Property(e => e.FirstName).HasColumnName("first_name");
                 entity.Property(e => e.LastName).HasColumnName("last_name");                
                 entity.Property(e => e.KerberosId).HasColumnName("kerberos_id");
