@@ -1,137 +1,54 @@
 ﻿@model IEnumerable<ITHelp.Models.WorkOrders>
 
-@{
-    ViewData["Title"] = "Index";
-}
 
-<h1>Index</h1>
+<h1>My Work Orders</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+
+<table class="table datatable">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SubmittedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RequestDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Technician)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FullText)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TechComments)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Room)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Building)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ComputerTag)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Resolution)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Rating)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RateComment)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CloseDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Difficulty)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Review)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StatusTranslate)
-            </th>
-            <th></th>
+            <th></th>            
+            <th>Title</th>
+            <th>Full Text</th>
+            <th>Requested</th>
+            <th>Due</th>
+            <th>Tech</th>
+            <th>Status</th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SubmittedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RequestDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Technician)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FullText)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TechComments)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Room)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Building)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ComputerTag)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Resolution)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rating)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RateComment)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CloseDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Difficulty)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Review)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StatusTranslate.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
+            <td><a asp-action="details" asp-route-id="@item.Id">@item.Id</a></td>
+            <td>@item.Title</td>
+            <td>@item.FullText</td>
+            <td data-sort="@item.RequestDate.Value.ToFileTimeUtc()">@item.RequestDate.Value.ToShortDateString()</td>
+            <td data-sort="@item.DueDate.Value.ToFileTimeUtc()">@item.DueDate.Value.ToShortDateString()</td>
+            <td>@item.Tech?.Name</td>
+            <td>@item.StatusTranslate.StatusTranslated</td>           
         </tr>
 }
     </tbody>
 </table>
+
+@section Scripts {
+
+    <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>   
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css" />
+    
+    <script>
+        $(document).ready(function () {
+            $('.datatable').DataTable({
+                dom: 'lfrtip',
+                columnDefs: [{
+                    targets: 2,
+                    searchable: true,
+                    visible: false
+                }]
+            });
+        });
+
+    </script>
+     
+
+}

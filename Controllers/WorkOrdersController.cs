@@ -9,6 +9,7 @@ using ITHelp.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using ITHelp.Services;
+using System.Security.Claims;
 
 namespace ITHelp.Controllers
 {
@@ -27,8 +28,12 @@ namespace ITHelp.Controllers
         // GET: WorkOrders
         public async Task<IActionResult> Index()
         {
-            var iTHelpContext = _context.WorkOrders.Include(w => w.StatusTranslate);
-            return View(await iTHelpContext.ToListAsync());
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value;
+            var model = await _context.WorkOrders
+                .Include(w => w.StatusTranslate)
+                .Include(w => w.Tech)
+                .Where(w => w.SubmittedBy == userId).ToListAsync();
+            return View(model);
         }
 
         // GET: WorkOrders/Details/5        
