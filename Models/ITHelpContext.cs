@@ -26,7 +26,7 @@ namespace ITHelp.Models
         public virtual DbSet<ManualEmployees> ManEmployees { get; set; }
         public virtual DbSet<PIGroups> PIGroups { get; set; }   
         public virtual DbSet<Status> Status { get; set; }
-        public virtual DbSet<UserReequestPermissions> UserReequestPermissions { get; set; }
+        public virtual DbSet<UserReequestPermissions> UserRequestPermissions { get; set; }
         public virtual DbSet<UserRequest> UserRequests { get; set; }
         public virtual DbSet<MigratedGroups> MigratedGroups { get; set; }
 
