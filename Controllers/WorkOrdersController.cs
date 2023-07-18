@@ -53,6 +53,25 @@ namespace ITHelp.Controllers
             return View(workOrders);
         }
 
+        public async Task<IActionResult> GetFile(int id, int attachId)
+        {
+            // TODO check permissions to file/wo
+            var wo = await _context.WorkOrders.Where(w => w.Id == id).FirstOrDefaultAsync();
+            if (wo == null)
+            {
+                ErrorMessage = "Work Order not found";
+                return RedirectToAction(nameof(Index));
+            }
+            var attach = await _context.Files.Where(f => f.Id == attachId && f.WOId == wo.Id).FirstOrDefaultAsync();
+            if(attach == null)
+            {
+                ErrorMessage = "File not found!";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+            var contentType = "APPLICATION/octet-stream";
+            return File(_fileService.GetWorkOrderFile(wo, attach), contentType, attach.Name);
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddFile(int id, IFormFile file)
         {
@@ -73,13 +92,14 @@ namespace ITHelp.Controllers
 
             if (file.Length > 0)
             {
-                await _fileService.SaveWorkOrderFile(wo, file);
+                
                 var attach = new Files();
                 attach.WOId = wo.Id;
                 attach.Name = file.FileName;
                 attach.Extension = ext;
                 _context.Add(attach);
                 await _context.SaveChangesAsync();
+                await _fileService.SaveWorkOrderFile(wo, attach.Id, file);
                 Message = "File uploaded";
             }
             return RedirectToAction(nameof(Details), new { id });
