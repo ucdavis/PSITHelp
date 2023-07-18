@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ITHelp.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using ITHelp.Services;
 
 namespace ITHelp.Controllers
 {
@@ -15,10 +16,12 @@ namespace ITHelp.Controllers
     public class WorkOrdersController : SuperController
     {
         private readonly ITHelpContext _context;
+        private readonly IFileIOService _fileService;
 
-        public WorkOrdersController(ITHelpContext context)
+        public WorkOrdersController(ITHelpContext context, IFileIOService fileService)
         {
             _context = context;
+            _fileService = fileService;
         }
 
         // GET: WorkOrders
@@ -48,6 +51,38 @@ namespace ITHelp.Controllers
             }
 
             return View(workOrders);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddFile(int id, IFormFile file)
+        {
+            var wo = await _context.WorkOrders.Where(w => w.Id == id).FirstOrDefaultAsync();
+            if (wo == null)
+            {
+                ErrorMessage = "Work Order not found";
+                return RedirectToAction(nameof(Index));
+            }
+            
+            var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+            if (_fileService.CheckDeniedExtension(ext))
+            {
+                ErrorMessage = "File extension not allowed!";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            if (file.Length > 0)
+            {
+                await _fileService.SaveWorkOrderFile(wo, file);
+                var attach = new Files();
+                attach.WOId = wo.Id;
+                attach.Name = file.FileName;
+                attach.Extension = ext;
+                _context.Add(attach);
+                await _context.SaveChangesAsync();
+                Message = "File uploaded";
+            }
+            return RedirectToAction(nameof(Details), new { id });
         }
 
         // GET: WorkOrders/Create
