@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+builder.Services.AddScoped<IFileIOService, FileIOService>();
 
 builder.Services.AddDbContext<ITHelpContext>(o =>
             {
@@ -41,7 +42,7 @@ builder.Services.AddScoped<IdentityService, IdentityService>();
                     if (string.IsNullOrWhiteSpace(kerb)) return;
                     ident.AddClaim(new Claim(ClaimTypes.NameIdentifier, assertion.PrincipalName));
                     var db = context.HttpContext.RequestServices.GetRequiredService<ITHelpContext>();
-                    var user = await db.Employees.Where(e => e.Current && e.KerberosId == kerb).FirstOrDefaultAsync();
+                    var user = await db.Employees.Where(e => e.KerberosId == kerb).FirstOrDefaultAsync();
                     if(user != null)
                     {                       
                         ident.AddClaim(new Claim(ClaimTypes.Surname, user.LastName));

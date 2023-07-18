@@ -53,10 +53,10 @@ namespace ITHelp.Models
             
             modelBuilder.Entity<Employee>(entity =>
             {
-                entity.ToTable("employees");
+                entity.ToTable("cats_employees");
 
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).HasColumnName("ucpath_id");
+                entity.Property(e => e.Id).HasColumnName("employee_id");
                 entity.Property(e => e.FirstName).HasColumnName("first_name");
                 entity.Property(e => e.LastName).HasColumnName("last_name");                
                 entity.Property(e => e.KerberosId).HasColumnName("kerberos_id");
@@ -91,6 +91,15 @@ namespace ITHelp.Models
             modelBuilder.Entity<AssignScheme>(entity =>
             {
                 entity.HasNoKey();                
+            });
+
+            modelBuilder.Entity<Files>(entity =>
+            {
+                entity.ToTable("wo_files");
+                entity.Property(e => e.Id).HasColumnName("attach_id");
+                entity.Property(e => e.WOId).HasColumnName("wo_id");
+                entity.Property(e => e.Name).HasColumnName("attach_name");
+                entity.Property(e => e.Extension).HasColumnName("file_ext");
             });
 
             

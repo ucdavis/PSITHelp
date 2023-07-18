@@ -10,8 +10,16 @@
 </head>
 <body>
     <header>
+        <div class="navbar " style="background-image: linear-gradient(white, #cce6ff)">
+            <div class="col-sm-12 col-md-7"><img src="~/images/pslogo.png" /></div>
+            <div class="col-sm-12 col-md-5 text-success">IT Helpline: (530) 754-7510<br />
+                Email: <a href="mailto:ithelp@plantsciences.ucdavis.edu">ithelp@plantsciences.ucdavis.edu</a>
+            </div>
+        </div>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">                
+            
+                       
+            <div class="container-fluid">  
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">IT Help</a>
                 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -21,22 +29,38 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="https://plsdeptresources.ucdavis.edu/computer-supportinformation-technology-it-services">IT Home</a>
+                            <a class="nav-link text-light" href="https://plsdeptresources.ucdavis.edu/computer-supportinformation-technology-it-services">IT Home</a>
                         </li>                        
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="WorkOrders" asp-action="NewTicket">Submit New Issue</a>
+                            <a class="nav-link text-light" asp-controller="WorkOrders" asp-action="NewTicket">Submit New Issue</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="WorkOrders" asp-action="Index">My Issues</a>
+                            <a class="nav-link text-light" asp-controller="WorkOrders" asp-action="Index">My Issues</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Users" asp-action="New">New User</a>
+                            <a class="nav-link text-light" asp-controller="Users" asp-action="New">New User</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Staff" asp-action="Index">Staff Home</a>
+                            <a class="nav-link text-light" asp-controller="Staff" asp-action="Index">Staff Home</a>
                         </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" asp-controller="Staff" asp-action="Index" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Staff Home
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                                <li><a class="dropdown-item" href="#">New WO</a></li>
+                                <li><a class="dropdown-item" href="#">My Open WO</a></li>
+                                <li><a class="dropdown-item" href="#">All Open WO</a></li>
+                                <li><a class="dropdown-item" href="#">Search</a></li>
+                                <hr />
+                                <li><a class="dropdown-item" href="#">Ticket Assignment</a></li>
+                                <li><a class="dropdown-item" href="#">Migrated Groups</a></li>
+                                <li><a class="dropdown-item" href="#">Request New User Permissions</a></li>
+                                <li><a class="dropdown-item" href="#">Merge WO</a></li>
+                            </ul>
+                        </li>                       
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Management" asp-action="Index">Management Home</a>
+                            <a class="nav-link text-light" asp-controller="Management" asp-action="Index">Management Home</a>
                         </li>
                     </ul>
                 </div>
@@ -44,6 +68,20 @@
         </nav>
     </header>
     <div class="container">
+        @if (!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string))
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fa-solid fa-triangle-exclamation"></i> @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (!string.IsNullOrWhiteSpace(TempData["Message"] as string))
+        {
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <i class="fa-solid fa-circle-info"></i> @TempData["Message"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -58,5 +96,6 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    
 </body>
 </html>
