@@ -110,7 +110,7 @@
                 <tbody>
                     @foreach (var attach in Model.Attachments)
                     {
-                        <tr><td>@attach.Name</td></tr>
+                        <tr><td><a asp-action="GetFile" asp-route-id="@attach.WOId" asp-route-attachId="@attach.Id">@attach.Name</a></td></tr>
                     }
                 </tbody>
             </table>
