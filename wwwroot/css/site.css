@@ -8,6 +8,11 @@ html {
   }
 }
 
+div.required label.col-form-label:after {
+    content: " *";
+    color: red;
+}
+
 .nav-link:hover {
     background-color: #ffbf00;
     color: #022851 !important;
