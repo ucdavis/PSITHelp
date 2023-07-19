@@ -115,7 +115,6 @@ namespace ITHelp.Controllers
         // GET: WorkOrders/Create
         public IActionResult Create()
         {
-            ViewData["Status"] = new SelectList(_context.Set<Status>(), "Id", "Id");
             return View();
         }
 
