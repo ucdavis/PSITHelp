@@ -9,18 +9,21 @@ namespace ITHelp.Models
         [Display (Name = "Work Order ID")]
         public int Id { get; set; }
         [Display(Name ="Subject")]
+        [Required]
         public string Title { get; set; }
         public string SubmittedBy { get; set; }
         public DateTime? RequestDate { get; set; }
         public DateTime? DueDate { get; set; }
         public string Technician { get; set; }
+        [Display(Name = "Description of problem")]
+        [Required]
         public string FullText { get; set; }
         public int? Status { get; set; }
         public string TechComments { get; set; }
         public string Phone { get; set; }
         public string Room { get; set; }
         public int? Building { get; set; }
-        [Display(Name ="Service Tag")]
+        [Display(Name ="Service Tag/Serial#")]
         public string ComputerTag { get; set; }
         public string Resolution { get; set; }
         public int? Rating { get; set; }
