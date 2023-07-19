@@ -18,6 +18,7 @@ namespace ITHelp.Models
 
         
         public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<Buildings> Buildings { get; set; }
         public virtual DbSet<WorkOrders> WorkOrders { get; set; }
         public virtual DbSet<Actions> Actions { get; set; }
         public virtual DbSet<ActiveStatus> ActiveStatus { get; set; }
@@ -71,7 +72,12 @@ namespace ITHelp.Models
 
             });
 
-            modelBuilder.Entity<WorkOrders>(entity =>
+			modelBuilder.Entity<Buildings>(entity =>
+			{
+				entity.ToView("buildings");
+			});
+
+			modelBuilder.Entity<WorkOrders>(entity =>
             {
                 entity.ToTable("work_orders");
                 entity.Property(e => e.Id).HasColumnName("wo_id");

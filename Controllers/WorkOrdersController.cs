@@ -113,9 +113,10 @@ namespace ITHelp.Controllers
         }
 
         // GET: WorkOrders/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var model = await WorkOrderEditCreateViewModel.Create(_context);
+            return View(model);
         }
 
         // POST: WorkOrders/Create

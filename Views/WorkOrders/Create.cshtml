@@ -1,51 +1,52 @@
-﻿@model ITHelp.Models.WorkOrders
+﻿@model ITHelp.Models.WorkOrderEditCreateViewModel
 
 
 <h1>Create New Work Order</h1>
 <hr />
-<div class="row">
-    
+<div class="row">    
     <div class="col-sm-12">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group row required">
-                <label asp-for="Title" class="col-sm-3 col-form-label"></label>
+                <label asp-for="workOrder.Title" class="col-sm-3 col-form-label"></label>
                 <div class="col-sm-9">
-                    <input type="text" asp-for="Title" class="form-control">
-                    <span asp-validation-for="Title" class="text-danger"></span>
+                    <input type="text" asp-for="workOrder.Title" class="form-control">
+                    <span asp-validation-for="workOrder.Title" class="text-danger"></span>
                 </div>
             </div>            
             <div class="form-group row required">
-                <label asp-for="FullText" class="col-sm-3 col-form-label"></label>
+                <label asp-for="workOrder.FullText" class="col-sm-3 col-form-label"></label>
                 <div class="col-sm-9">
-                    <textarea class="form-control" style="height: 200px;" asp-for="FullText"></textarea>
-					<span asp-validation-for="FullText" class="text-danger"></span>
+                    <textarea class="form-control" style="height: 200px;" asp-for="workOrder.FullText"></textarea>
+					<span asp-validation-for="workOrder.FullText" class="text-danger"></span>
                 </div>                
             </div>            
             <div class="form-group row">
-                <label asp-for="Phone" class="col-sm-3 control-label"></label>
+                <label asp-for="workOrder.Phone" class="col-sm-3 col-form-label"></label>
                 <div class="col-sm-3">
-					<input asp-for="Phone" class="form-control" />
-					<span asp-validation-for="Phone" class="text-danger"></span>
+					<input asp-for="workOrder.Phone" class="form-control" />
+					<span asp-validation-for="workOrder.Phone" class="text-danger"></span>
                 </div>                
             </div>
             <div class="form-group row">
-                <label asp-for="Room" class="col-sm-3 control-label"></label>
+                <label asp-for="workOrder.Room" class="col-sm-3 col-form-label"></label>
                 <div class="col-sm-3">
-                    <input asp-for="Room" class="form-control" />
-                    <span asp-validation-for="Room" class="text-danger"></span>
+                    <input asp-for="workOrder.Room" class="form-control" />
+                    <span asp-validation-for="workOrder.Room" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Building" class="control-label"></label>
-                <input asp-for="Building" class="form-control" />
-                <span asp-validation-for="Building" class="text-danger"></span>
+            <div class="form-group row">
+                <label asp-for="workOrder.Building" class="col-sm-3 col-form-label">Building</label>
+                <div class="col-sm-3">
+                    <select asp-for="workOrder.Building" class="form-select form-select-sm" asp-items="@(new SelectList(Model.buildings, "Id", "Name"))"></select>
+                    <span asp-validation-for="workOrder.Building" class="text-danger"></span>
+                </div>        
             </div>
             <div class="form-group row">
-                <label asp-for="ComputerTag" class="col-sm-3 control-label"></label>
+                <label asp-for="workOrder.ComputerTag" class="col-sm-3 col-form-label"></label>
                 <div class="col-sm-4">
-					<input asp-for="ComputerTag" class="col-sm-4 form-control" />
-					<span asp-validation-for="ComputerTag" class="text-danger"></span>
+					<input asp-for="workOrder.ComputerTag" class="col-sm-4 form-control" />
+					<span asp-validation-for="workOrder.ComputerTag" class="text-danger"></span>
                 </div>                
             </div>
             <div class="form-group">
