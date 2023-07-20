@@ -10,6 +10,10 @@ namespace ITHelp.Models
         //public bool Current { get; set; }
         public string KerberosId { get; set; }
         public string Role { get; set; }
+        public string Phone { get; set; }
+        public string Building { get; set; }
+        public string Room { get; set; }
+        public string Email { get; set; }
 
         public string Name { 
             get {

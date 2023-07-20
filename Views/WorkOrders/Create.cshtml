@@ -22,10 +22,16 @@
                 </div>                
             </div>            
             <div class="form-group row">
-                <label asp-for="workOrder.Phone" class="col-sm-3 col-form-label"></label>
-                <div class="col-sm-3">
-					<input asp-for="workOrder.Phone" class="form-control" />
-					<span asp-validation-for="workOrder.Phone" class="text-danger"></span>
+                <label asp-for="workOrder.Contact" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-9">
+					<input asp-for="workOrder.Contact" class="form-control" />
+					<span asp-validation-for="workOrder.Contact" class="text-danger"></span>
+                </div>                
+            </div>
+            <div class="form-group row">
+                <label asp-for="UpdateContact" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-2">
+                    <input type="checkbox" class="form-check-input bigCheckbox" asp-for="UpdateContact" />
                 </div>                
             </div>
             <div class="form-group row">

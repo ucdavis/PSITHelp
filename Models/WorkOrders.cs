@@ -20,7 +20,8 @@ namespace ITHelp.Models
         public string FullText { get; set; }
         public int? Status { get; set; }
         public string TechComments { get; set; }
-        public string Phone { get; set; }
+        [MaxLength(500)]
+        public string Contact { get; set; }
         public string Room { get; set; }
         public int? Building { get; set; }
         [Display(Name ="Service Tag/Serial#")]

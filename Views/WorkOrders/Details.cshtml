@@ -5,128 +5,125 @@
 
 
 <div>
-    <hr />
-    <div class="form-group row">
-        <label asp-for="Id" class="col-sm-3 col-form-label"></label>
-        <div class="col-sm-9">
-            <input type="text" asp-for="Id" readonly class="form-control-plaintext">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label asp-for="Title" class="col-sm-3 col-form-label"></label>
-        <div class="col-sm-9">
-            <input type="text" asp-for="Title" readonly class="form-control-plaintext">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label asp-for="Requester.Name" class="col-sm-3 col-form-label">Requested By</label>
-        <div class="col-sm-9">
-            <input type="text" asp-for="Requester.Name" readonly class="form-control-plaintext">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label asp-for="RequestDate" class="col-sm-3 col-form-label">Requested</label>
-        <div class="col-sm-9">
-            <input type="text" asp-for="RequestDate" readonly class="form-control-plaintext">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label asp-for="Tech.Name" class="col-sm-3 col-form-label">Technician</label>
-        <div class="col-sm-9">
-            <input type="text" asp-for="Tech.Name" readonly class="form-control-plaintext">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label asp-for="StatusTranslate.StatusTranslated" class="col-sm-3 col-form-label"></label>
-        <div class="col-sm-9">
-            <input type="text" asp-for="StatusTranslate.StatusTranslated" readonly class="form-control-plaintext">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label asp-for="FullText" class="col-sm-3 col-form-label"></label>
-        <div class="col-sm-9 border">
-            <textarea class="form-control-plaintext" style="height: 200px;" readonly asp-for="FullText"></textarea>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label asp-for="Phone" class="col-sm-3 col-form-label"></label>
-        <div class="col-sm-9">
-            <input type="text" asp-for="Phone" readonly class="form-control-plaintext">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label asp-for="Room" class="col-sm-3 col-form-label"></label>
-        <div class="col-sm-9">
-            <input type="text" asp-for="Room" readonly class="form-control-plaintext">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label asp-for="ComputerTag" class="col-sm-3 col-form-label"></label>
-        <div class="col-sm-9">
-            <input type="text" asp-for="ComputerTag" readonly class="form-control-plaintext">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label asp-for="Resolution" class="col-sm-3 col-form-label"></label>
-        <div class="col-sm-9">
-            <input type="text" asp-for="Resolution" readonly class="form-control-plaintext">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label asp-for="CloseDate" class="col-sm-3 col-form-label"></label>
-        <div class="col-sm-9">
-            <input type="text" asp-for="CloseDate" readonly class="form-control-plaintext">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label asp-for="CreatorValue" class="col-sm-3 col-form-label"></label>
-        <div class="col-sm-9">
-            <input type="text" asp-for="CreatorValue" readonly class="form-control-plaintext">
-        </div>
-    </div>
-    @if(!this.User.IsInRole("none"))
-    {
-        <div>Only visible to students, techs, managers, admins</div>
-        <div class="form-group row">
-            <label asp-for="Difficulty" class="col-sm-3 col-form-label"></label>
-            <div class="col-sm-9">
-                <input type="text" asp-for="Difficulty" readonly class="form-control-plaintext">
-            </div>
-        </div>
-    }   
-    @if (this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value == Model.SubmittedBy)
-    {
-        <div>Only shows if user == submitted by</div>
-        <div>Link to hardware release (may not need?????)</div>
-    }   
-    <div>
-        <hr />
-        @if (Model.Attachments.Any())
-        {
-            <table class="table table-striped table-info">
-                <thead>
-                    <tr class="table-primary"><th>Attachments</th></tr>               
-                </thead>
-                <tbody>
-                    @foreach (var attach in Model.Attachments)
-                    {
-                        <tr><td><a asp-action="GetFile" asp-route-id="@attach.WOId" asp-route-attachId="@attach.Id">@attach.Name</a></td></tr>
-                    }
-                </tbody>
-            </table>
-        }
-        <a asp-action="addFile" asp-route-id="Id" class="btn btn-info">Add New Attachment</a>
-        <div class="card" >
-            <div class="card-body">
-                <h5 class="card-title">Add New Attachment</h5>
-                <form enctype="multipart/form-data" method="post" asp-action="AddFile">
-                    <input type="hidden" asp-for="Id" />
-                    <input id="file" name="file" type="file">
-                    <input class="btn btn-primary" type="submit" value="Upload" />
-                    <br>Allowed files: @Configuration["AllowedFiles"]
+	<hr />
+	<div class="form-group row">
+		<label asp-for="Id" class="col-sm-3 col-form-label"></label>
+		<div class="col-sm-9">
+			<input type="text" asp-for="Id" readonly class="form-control-plaintext">
+		</div>
+	</div>
+	<div class="form-group row">
+		<label asp-for="Title" class="col-sm-3 col-form-label"></label>
+		<div class="col-sm-9">
+			<input type="text" asp-for="Title" readonly class="form-control-plaintext">
+		</div>
+	</div>
+	<div class="form-group row">
+		<label asp-for="Requester.Name" class="col-sm-3 col-form-label">Requested By</label>
+		<div class="col-sm-9">
+			<input type="text" asp-for="Requester.Name" readonly class="form-control-plaintext">
+		</div>
+	</div>
+	<div class="form-group row">
+		<label asp-for="RequestDate" class="col-sm-3 col-form-label">Requested</label>
+		<div class="col-sm-9">
+			<input type="text" asp-for="RequestDate" readonly class="form-control-plaintext">
+		</div>
+	</div>
+	<div class="form-group row">
+		<label asp-for="Tech.Name" class="col-sm-3 col-form-label">Technician</label>
+		<div class="col-sm-9">
+			<input type="text" asp-for="Tech.Name" readonly class="form-control-plaintext">
+		</div>
+	</div>
+	<div class="form-group row">
+		<label asp-for="StatusTranslate.StatusTranslated" class="col-sm-3 col-form-label"></label>
+		<div class="col-sm-9">
+			<input type="text" asp-for="StatusTranslate.StatusTranslated" readonly class="form-control-plaintext">
+		</div>
+	</div>
+	<div class="form-group row">
+		<label asp-for="FullText" class="col-sm-3 col-form-label"></label>
+		<div class="col-sm-9 border">
+			<textarea class="form-control-plaintext" style="height: 200px;" readonly asp-for="FullText"></textarea>
+		</div>
+	</div>
+	<div class="form-group row">
+		<label asp-for="Contact" class="col-sm-3 col-form-label"></label>
+		<div class="col-sm-9">
+			<input type="text" asp-for="Contact" readonly class="form-control-plaintext">
+		</div>
+	</div>
+	<div class="form-group row">
+		<label asp-for="ComputerTag" class="col-sm-3 col-form-label"></label>
+		<div class="col-sm-9">
+			<input type="text" asp-for="ComputerTag" readonly class="form-control-plaintext">
+		</div>
+	</div>
+	@if (!string.IsNullOrWhiteSpace(Model.Resolution))
+	{
+		<div class="form-group row">
+			<label asp-for="Resolution" class="col-sm-3 col-form-label"></label>
+			<div class="col-sm-9">
+				<input type="text" asp-for="Resolution" readonly class="form-control-plaintext">
+			</div>
+		</div>
+	}
+	<div class="form-group row">
+		<label asp-for="CloseDate" class="col-sm-3 col-form-label"></label>
+		<div class="col-sm-9">
+			<input type="text" asp-for="CloseDate" readonly class="form-control-plaintext">
+		</div>
+	</div>
+	<div class="form-group row">
+		<label asp-for="CreatorValue" class="col-sm-3 col-form-label"></label>
+		<div class="col-sm-9">
+			<input type="text" asp-for="CreatorValue" readonly class="form-control-plaintext">
+		</div>
+	</div>
+	@if (!this.User.IsInRole("none"))
+	{
+		<div>Only visible to students, techs, managers, admins</div>
+		<div class="form-group row">
+			<label asp-for="Difficulty" class="col-sm-3 col-form-label"></label>
+			<div class="col-sm-9">
+				<input type="text" asp-for="Difficulty" readonly class="form-control-plaintext">
+			</div>
+		</div>
+	}
+	@if (this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value == Model.SubmittedBy)
+	{
+		<div>Only shows if user == submitted by</div>
+		<div>Link to hardware release (may not need?????)</div>
+	}
+	<div>
+		<hr />
+		@if (Model.Attachments.Any())
+		{
+			<table class="table table-striped table-info">
+				<thead>
+					<tr class="table-primary"><th>Attachments</th></tr>
+				</thead>
+				<tbody>
+					@foreach (var attach in Model.Attachments)
+					{
+						<tr><td><a asp-action="GetFile" asp-route-id="@attach.WOId" asp-route-attachId="@attach.Id">@attach.Name</a></td></tr>
+					}
+				</tbody>
+			</table>
+		}
+		<a asp-action="addFile" asp-route-id="Id" class="btn btn-info">Add New Attachment</a>
+		<div class="card">
+			<div class="card-body">
+				<h5 class="card-title">Add New Attachment</h5>
+				<form enctype="multipart/form-data" method="post" asp-action="AddFile">
+					<input type="hidden" asp-for="Id" />
+					<input id="file" name="file" type="file">
+					<input class="btn btn-primary" type="submit" value="Upload" />
+					<br>Allowed files: @Configuration["AllowedFiles"]
 
-                </form>                
-            </div>
-        </div>
-    </div>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>

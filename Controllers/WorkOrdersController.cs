@@ -115,7 +115,7 @@ namespace ITHelp.Controllers
         // GET: WorkOrders/Create
         public async Task<IActionResult> Create()
         {
-            var model = await WorkOrderEditCreateViewModel.Create(_context);
+            var model = await WorkOrderEditCreateViewModel.Create(_context, GetUserId());
             return View(model);
         }
 

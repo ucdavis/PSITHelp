@@ -8,6 +8,11 @@ html {
   }
 }
 
+.bigCheckbox {
+    width: 30px !important;
+    height: 30px !important;
+}
+
 div.required label.col-form-label:after {
     content: " *";
     color: red;
