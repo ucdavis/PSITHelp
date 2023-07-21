@@ -119,22 +119,33 @@ namespace ITHelp.Controllers
             return View(model);
         }
 
-        // POST: WorkOrders/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,SubmittedBy,RequestDate,Technician,FullText,Status,TechComments,Phone,Room,Building,ComputerTag,Resolution,Rating,RateComment,CloseDate,CreatedBy,Difficulty,Review")] WorkOrders workOrders)
+        public async Task<IActionResult> Create(WorkOrderEditCreateViewModel vm)
         {
-            if (ModelState.IsValid)
+            var woToCreate = new WorkOrders();
+            var woSubmitted = vm.workOrder;
+            woToCreate.Title = woSubmitted.Title;
+            woToCreate.SubmittedBy = GetUserId();
+            woToCreate.CreatedBy = GetUserId();            
+            //woToCreate.Technician = GetNextTech();
+            woToCreate.FullText = woSubmitted.FullText;
+            // TODO deal with contact storage;
+            woToCreate.Contact = woSubmitted.Contact;           
+            woToCreate.ComputerTag = woSubmitted.ComputerTag;
+            woToCreate.Room = woSubmitted.Room;
+            woToCreate.Building = woSubmitted.Building;
+            // TODO add notifications
+
+            if(ModelState.IsValid)
             {
-                _context.Add(workOrders);
+                _context.Add(vm.workOrder);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                Message = "Work Order created";
+                return RedirectToAction(nameof(Details), new { vm.workOrder.Id });
             }
-            ViewData["Status"] = new SelectList(_context.Set<Status>(), "Id", "Id", workOrders.Status);
-            return View(workOrders);
+            return View(vm);
         }
+        
 
         // GET: WorkOrders/Edit/5
         public async Task<IActionResult> Edit(int? id)

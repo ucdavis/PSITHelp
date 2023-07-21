@@ -66,5 +66,13 @@ namespace ITHelp.Models
         [ForeignKey("WOId")]
         public ICollection<Files> Attachments { get; set; }
 
+        public WorkOrders()
+        {
+            RequestDate = DateTime.Now;
+            Status = 1;
+            Review = false;
+            Difficulty = 1;
+        }
+
     }
 }
