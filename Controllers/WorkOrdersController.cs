@@ -191,7 +191,7 @@ namespace ITHelp.Controllers
 
         private bool CheckWOPermissison(WorkOrders wo)
         {
-            if(User.IsInRole("student") || User.IsInRole("tech") || User.IsInRole("manager"))
+            if(User.IsInRole("student") || User.IsInRole("tech") || User.IsInRole("manager") || User.IsInRole("admin"))
             {
                 return true;
             }
