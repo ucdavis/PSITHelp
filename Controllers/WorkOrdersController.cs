@@ -124,13 +124,28 @@ namespace ITHelp.Controllers
         {
             var woToCreate = new WorkOrders();
             var woSubmitted = vm.workOrder;
+            var tech = await GetNextTechnician();
+            var userId = GetUserId();
             woToCreate.Title = woSubmitted.Title;
-            woToCreate.SubmittedBy = GetUserId();
-            woToCreate.CreatedBy = GetUserId();            
-            //woToCreate.Technician = GetNextTech();
+            woToCreate.SubmittedBy = userId;
+            woToCreate.CreatedBy = userId;
+            woToCreate.Technician = tech.First().Id;
             woToCreate.FullText = woSubmitted.FullText;
-            // TODO deal with contact storage;
-            woToCreate.Contact = woSubmitted.Contact;           
+            woToCreate.Contact = woSubmitted.Contact;
+            if (vm.UpdateContact)
+            {
+                var employeeContactUpdate = await _context.Preferences.Where(p => p.Id == userId).FirstOrDefaultAsync();
+                if(employeeContactUpdate == null)
+                {
+                    employeeContactUpdate = new EmployeePreferences();
+                    employeeContactUpdate.Id = userId;
+                    employeeContactUpdate.ContactInfo = woSubmitted.Contact;
+                    _context.Add(employeeContactUpdate); 
+                } else
+                {
+                    employeeContactUpdate.ContactInfo = woSubmitted.Contact;
+                }                
+            }
             woToCreate.ComputerTag = woSubmitted.ComputerTag;
             woToCreate.Room = woSubmitted.Room;
             woToCreate.Building = woSubmitted.Building;
@@ -140,12 +155,23 @@ namespace ITHelp.Controllers
             {
                 _context.Add(vm.workOrder);
                 await _context.SaveChangesAsync();
-                Message = "Work Order created";
+                if(vm.UpdateContact)
+                {
+                    Message = "Work Order created & Contact preferences updated.";
+                } else
+                {
+                    Message = "Work Order created";
+                }
                 return RedirectToAction(nameof(Details), new { vm.workOrder.Id });
             }
             return View(vm);
         }
-        
+
+        private async Task<List<Employee>> GetNextTechnician()
+        {
+            return await _context.Employees.FromSqlRaw($"EXEC mvc_getnexttech").ToListAsync();
+        }
+
 
         // GET: WorkOrders/Edit/5
         public async Task<IActionResult> Edit(int? id)

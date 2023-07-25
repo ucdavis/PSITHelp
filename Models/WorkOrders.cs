@@ -72,6 +72,26 @@ namespace ITHelp.Models
             Status = 1;
             Review = false;
             Difficulty = 1;
+            DueDate = getDueDate();
+        }
+
+        private DateTime getDueDate()
+        {
+            DateTime dueDay = DateTime.Now.Date;
+            switch (DateTime.Now.DayOfWeek)
+            {
+                case DayOfWeek.Wednesday: dueDay = DateTime.Now.AddDays(5).Date;
+                    break;
+                case DayOfWeek.Thursday: dueDay = DateTime.Now.AddDays(5).Date;
+                    break;
+                case DayOfWeek.Friday: dueDay = DateTime.Now.AddDays(5).Date;
+                    break;
+                case DayOfWeek.Saturday: dueDay = DateTime.Now.AddDays(4).Date;
+                    break;
+                default: dueDay = DateTime.Now.AddDays(3).Date;
+                    break;
+            }
+            return dueDay + new TimeSpan(12,0,0);
         }
 
     }
