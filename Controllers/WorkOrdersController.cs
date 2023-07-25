@@ -18,11 +18,13 @@ namespace ITHelp.Controllers
     {
         private readonly ITHelpContext _context;
         private readonly IFileIOService _fileService;
+        private readonly INotificationService _notificationService;
 
-        public WorkOrdersController(ITHelpContext context, IFileIOService fileService)
+        public WorkOrdersController(ITHelpContext context, IFileIOService fileService, INotificationService notificationService)
         {
             _context = context;
             _fileService = fileService;
+            _notificationService = notificationService;
         }
 
         // GET: WorkOrders
@@ -130,6 +132,7 @@ namespace ITHelp.Controllers
             woToCreate.SubmittedBy = userId;
             woToCreate.CreatedBy = userId;
             woToCreate.Technician = tech.First().Id;
+            woToCreate.Tech = tech.First();
             woToCreate.FullText = woSubmitted.FullText;
             woToCreate.Contact = woSubmitted.Contact;
             if (vm.UpdateContact)
@@ -149,11 +152,12 @@ namespace ITHelp.Controllers
             woToCreate.ComputerTag = woSubmitted.ComputerTag;
             woToCreate.Room = woSubmitted.Room;
             woToCreate.Building = woSubmitted.Building;
-            // TODO add notifications
 
             if(ModelState.IsValid)
             {
-                _context.Add(vm.workOrder);
+                _context.Add(woToCreate);
+                await _context.SaveChangesAsync();
+                await _notificationService.WorkOrderCreated(woToCreate);
                 await _context.SaveChangesAsync();
                 if(vm.UpdateContact)
                 {
@@ -243,6 +247,11 @@ namespace ITHelp.Controllers
         private string GetUserId()
         {
             return User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value;
+        }
+
+        private string GetUserName()
+        {
+            return User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName).Value + " " + User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Surname).Value;
         }
 
         
