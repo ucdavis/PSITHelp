@@ -18,17 +18,19 @@ namespace ITHelp.Controllers
     {
         private readonly ITHelpContext _context;
         private readonly IFileIOService _fileService;
+        private readonly INotificationService _notificationService;
 
-        public WorkOrdersController(ITHelpContext context, IFileIOService fileService)
+        public WorkOrdersController(ITHelpContext context, IFileIOService fileService, INotificationService notificationService)
         {
             _context = context;
             _fileService = fileService;
+            _notificationService = notificationService;
         }
 
         // GET: WorkOrders
         public async Task<IActionResult> Index()
         {
-            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value;
+            var userId = GetUserId();
             var model = await _context.WorkOrders
                 .Include(w => w.StatusTranslate)
                 .Include(w => w.Tech)
@@ -41,7 +43,8 @@ namespace ITHelp.Controllers
         {
             if (id == null || _context.WorkOrders == null)
             {
-                return NotFound();
+                ErrorMessage = "Work order not found";
+                return RedirectToAction(nameof(Index));
             }
 
             var workOrders = await _context.WorkOrders
@@ -50,9 +53,10 @@ namespace ITHelp.Controllers
                 .Include(w => w.Tech)
                 .Include(w => w.Attachments)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (workOrders == null)
+            if (workOrders == null || !CheckWOPermissison(workOrders))
             {
-                return NotFound();
+                ErrorMessage = "Work order not found or that is not your work order";
+                return RedirectToAction(nameof(Index));
             }
 
             return View(workOrders);
@@ -62,9 +66,9 @@ namespace ITHelp.Controllers
         {
             // TODO check permissions to file/wo
             var wo = await _context.WorkOrders.Where(w => w.Id == id).FirstOrDefaultAsync();
-            if (wo == null)
+            if (wo == null || !CheckWOPermissison(wo))
             {
-                ErrorMessage = "Work Order not found";
+                ErrorMessage = "Work Order not found or you don't have permission to that work order.";
                 return RedirectToAction(nameof(Index));
             }
             var attach = await _context.Files.Where(f => f.Id == attachId && f.WOId == wo.Id).FirstOrDefaultAsync();
@@ -81,9 +85,9 @@ namespace ITHelp.Controllers
         public async Task<IActionResult> AddFile(int id, IFormFile file)
         {
             var wo = await _context.WorkOrders.Where(w => w.Id == id).FirstOrDefaultAsync();
-            if (wo == null)
+            if (wo == null || !CheckWOPermissison(wo))
             {
-                ErrorMessage = "Work Order not found";
+                ErrorMessage = "Work Order not found or you do not have permission to that work order.";
                 return RedirectToAction(nameof(Index));
             }
             
@@ -111,28 +115,67 @@ namespace ITHelp.Controllers
         }
 
         // GET: WorkOrders/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["Status"] = new SelectList(_context.Set<Status>(), "Id", "Id");
-            return View();
+            var model = await WorkOrderEditCreateViewModel.Create(_context, GetUserId());
+            return View(model);
         }
 
-        // POST: WorkOrders/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,SubmittedBy,RequestDate,Technician,FullText,Status,TechComments,Phone,Room,Building,ComputerTag,Resolution,Rating,RateComment,CloseDate,CreatedBy,Difficulty,Review")] WorkOrders workOrders)
+        public async Task<IActionResult> Create(WorkOrderEditCreateViewModel vm)
         {
-            if (ModelState.IsValid)
+            var woToCreate = new WorkOrders();
+            var woSubmitted = vm.workOrder;
+            var tech = await GetNextTechnician();
+            var userId = GetUserId();
+            woToCreate.Title = woSubmitted.Title;
+            woToCreate.SubmittedBy = userId;
+            woToCreate.CreatedBy = userId;
+            woToCreate.Technician = tech.First().Id;
+            woToCreate.Tech = tech.First();
+            woToCreate.FullText = woSubmitted.FullText;
+            woToCreate.Contact = woSubmitted.Contact;
+            if (vm.UpdateContact)
             {
-                _context.Add(workOrders);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var employeeContactUpdate = await _context.Preferences.Where(p => p.Id == userId).FirstOrDefaultAsync();
+                if(employeeContactUpdate == null)
+                {
+                    employeeContactUpdate = new EmployeePreferences();
+                    employeeContactUpdate.Id = userId;
+                    employeeContactUpdate.ContactInfo = woSubmitted.Contact;
+                    _context.Add(employeeContactUpdate); 
+                } else
+                {
+                    employeeContactUpdate.ContactInfo = woSubmitted.Contact;
+                }                
             }
-            ViewData["Status"] = new SelectList(_context.Set<Status>(), "Id", "Id", workOrders.Status);
-            return View(workOrders);
+            woToCreate.ComputerTag = woSubmitted.ComputerTag;
+            woToCreate.Room = woSubmitted.Room;
+            woToCreate.Building = woSubmitted.Building;
+
+            if(ModelState.IsValid)
+            {
+                _context.Add(woToCreate);
+                await _context.SaveChangesAsync();
+                await _notificationService.WorkOrderCreated(woToCreate);
+                await _context.SaveChangesAsync();
+                if(vm.UpdateContact)
+                {
+                    Message = "Work Order created & Contact preferences updated.";
+                } else
+                {
+                    Message = "Work Order created";
+                }
+                return RedirectToAction(nameof(Details), new { woToCreate.Id });
+            }
+            return View(vm);
         }
+
+        private async Task<List<Employee>> GetNextTechnician()
+        {
+            return await _context.Employees.FromSqlRaw($"EXEC mvc_getnexttech").ToListAsync();
+        }
+
 
         // GET: WorkOrders/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -163,71 +206,54 @@ namespace ITHelp.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(workOrders);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!WorkOrdersExists(workOrders.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
+            //if (ModelState.IsValid)
+            //{
+            //    try
+            //    {
+            //        _context.Update(workOrders);
+            //        await _context.SaveChangesAsync();
+            //    }
+            //    catch (DbUpdateConcurrencyException)
+            //    {
+            //        if (!WorkOrdersExists(workOrders.Id))
+            //        {
+            //            return NotFound();
+            //        }
+            //        else
+            //        {
+            //            throw;
+            //        }
+            //    }
+            //    return RedirectToAction(nameof(Index));
+            //}
             ViewData["Status"] = new SelectList(_context.Set<Status>(), "Id", "Id", workOrders.Status);
             return View(workOrders);
         }
 
-        // GET: WorkOrders/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        private bool CheckWOPermissison(WorkOrders wo)
         {
-            if (id == null || _context.WorkOrders == null)
+            if(User.IsInRole("student") || User.IsInRole("tech") || User.IsInRole("manager") || User.IsInRole("admin"))
             {
-                return NotFound();
+                return true;
             }
-
-            var workOrders = await _context.WorkOrders
-                .Include(w => w.StatusTranslate)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (workOrders == null)
+            var userId = GetUserId();
+            if(wo.SubmittedBy == userId)
             {
-                return NotFound();
+                return true;
             }
-
-            return View(workOrders);
+            return false;
         }
 
-        // POST: WorkOrders/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        private string GetUserId()
         {
-            if (_context.WorkOrders == null)
-            {
-                return Problem("Entity set 'ITHelpContext.WorkOrders'  is null.");
-            }
-            var workOrders = await _context.WorkOrders.FindAsync(id);
-            if (workOrders != null)
-            {
-                _context.WorkOrders.Remove(workOrders);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value;
         }
 
-        private bool WorkOrdersExists(int id)
+        private string GetUserName()
         {
-          return _context.WorkOrders.Any(e => e.Id == id);
+            return User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName).Value + " " + User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Surname).Value;
         }
+
+        
     }
 }

@@ -18,6 +18,7 @@ namespace ITHelp.Models
 
         
         public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<Buildings> Buildings { get; set; }
         public virtual DbSet<WorkOrders> WorkOrders { get; set; }
         public virtual DbSet<Actions> Actions { get; set; }
         public virtual DbSet<ActiveStatus> ActiveStatus { get; set; }
@@ -26,12 +27,14 @@ namespace ITHelp.Models
         public virtual DbSet<ManualEmployees> ManEmployees { get; set; }
         public virtual DbSet<PIGroups> PIGroups { get; set; }   
         public virtual DbSet<Status> Status { get; set; }
-        public virtual DbSet<UserReequestPermissions> UserReequestPermissions { get; set; }
+        public virtual DbSet<UserReequestPermissions> UserRequestPermissions { get; set; }
         public virtual DbSet<UserRequest> UserRequests { get; set; }
         public virtual DbSet<MigratedGroups> MigratedGroups { get; set; }
+        public virtual DbSet<EmployeePreferences> Preferences { get; set; }
+        public virtual DbSet<Notifications> Notifications { get; set; }
 
 
-       
+
 
         public static ILoggerFactory GetLoggerFactory()
         {
@@ -61,6 +64,10 @@ namespace ITHelp.Models
                 entity.Property(e => e.LastName).HasColumnName("last_name");                
                 entity.Property(e => e.KerberosId).HasColumnName("kerberos_id");
                 entity.Property(e => e.Role).HasColumnName("cats_role");
+                entity.Property(e => e.Phone).HasColumnName("campus_phone");
+                entity.Property(e => e.Building).HasColumnName("campus_bldg");
+                entity.Property(e => e.Room).HasColumnName("campus_room");
+                entity.Property(e => e.Email).HasColumnName("ucd_mailid");
             });
 
             modelBuilder.Entity<Status>(entity =>
@@ -71,7 +78,12 @@ namespace ITHelp.Models
 
             });
 
-            modelBuilder.Entity<WorkOrders>(entity =>
+			modelBuilder.Entity<Buildings>(entity =>
+			{
+				entity.ToView("buildings");
+			});
+
+			modelBuilder.Entity<WorkOrders>(entity =>
             {
                 entity.ToTable("work_orders");
                 entity.Property(e => e.Id).HasColumnName("wo_id");
@@ -86,6 +98,7 @@ namespace ITHelp.Models
                 entity.Property(e => e.CreatedBy).HasColumnName("created_by");
                 entity.Property(e => e.Difficulty).HasColumnName("difficulty_rating");
                 entity.Property(e => e.Building).HasColumnName("bldg");
+                entity.Property(e => e.Contact).HasColumnName("phone");
             });
 
             modelBuilder.Entity<AssignScheme>(entity =>
@@ -102,7 +115,11 @@ namespace ITHelp.Models
                 entity.Property(e => e.Extension).HasColumnName("file_ext");
             });
 
-            
+            modelBuilder.Entity<EmployeePreferences>(entity =>
+            {
+                entity.ToTable("EmployeePreferences");
+            });
+                       
         }
           
     

@@ -9,18 +9,22 @@ namespace ITHelp.Models
         [Display (Name = "Work Order ID")]
         public int Id { get; set; }
         [Display(Name ="Subject")]
+        [Required]
         public string Title { get; set; }
         public string SubmittedBy { get; set; }
         public DateTime? RequestDate { get; set; }
         public DateTime? DueDate { get; set; }
         public string Technician { get; set; }
+        [Display(Name = "Description of problem")]
+        [Required]
         public string FullText { get; set; }
         public int? Status { get; set; }
         public string TechComments { get; set; }
-        public string Phone { get; set; }
+        [MaxLength(500)]
+        public string Contact { get; set; }
         public string Room { get; set; }
         public int? Building { get; set; }
-        [Display(Name ="Service Tag")]
+        [Display(Name ="Service Tag/Serial#")]
         public string ComputerTag { get; set; }
         public string Resolution { get; set; }
         public int? Rating { get; set; }
@@ -61,6 +65,34 @@ namespace ITHelp.Models
 
         [ForeignKey("WOId")]
         public ICollection<Files> Attachments { get; set; }
+
+        public WorkOrders()
+        {
+            RequestDate = DateTime.Now;
+            Status = 1;
+            Review = false;
+            Difficulty = 1;
+            DueDate = getDueDate();
+        }
+
+        private DateTime getDueDate()
+        {
+            DateTime dueDay = DateTime.Now.Date;
+            switch (DateTime.Now.DayOfWeek)
+            {
+                case DayOfWeek.Wednesday: dueDay = DateTime.Now.AddDays(5).Date;
+                    break;
+                case DayOfWeek.Thursday: dueDay = DateTime.Now.AddDays(5).Date;
+                    break;
+                case DayOfWeek.Friday: dueDay = DateTime.Now.AddDays(5).Date;
+                    break;
+                case DayOfWeek.Saturday: dueDay = DateTime.Now.AddDays(4).Date;
+                    break;
+                default: dueDay = DateTime.Now.AddDays(3).Date;
+                    break;
+            }
+            return dueDay + new TimeSpan(12,0,0);
+        }
 
     }
 }

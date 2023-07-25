@@ -1,116 +1,68 @@
-﻿@model ITHelp.Models.WorkOrders
+﻿@model ITHelp.Models.WorkOrderEditCreateViewModel
 
-@{
-    ViewData["Title"] = "Create";
-}
 
-<h1>Create</h1>
-
-<h4>WorkOrders</h4>
+<h1>Create New Work Order</h1>
 <hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="row">    
+    <div class="col-sm-12">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+            <div class="form-group row required">
+                <label asp-for="workOrder.Title" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-9">
+                    <input type="text" asp-for="workOrder.Title" class="form-control">
+                    <span asp-validation-for="workOrder.Title" class="text-danger"></span>
+                </div>
+            </div>            
+            <div class="form-group row required">
+                <label asp-for="workOrder.FullText" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-9">
+                    <textarea class="form-control" style="height: 200px;" asp-for="workOrder.FullText"></textarea>
+					<span asp-validation-for="workOrder.FullText" class="text-danger"></span>
+                </div>                
+            </div>            
+            <div class="form-group row">
+                <label asp-for="workOrder.Contact" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-9">
+					<input asp-for="workOrder.Contact" class="form-control" />
+					<span asp-validation-for="workOrder.Contact" class="text-danger"></span>
+                </div>                
+            </div>
+            <div class="form-group row">
+                <label asp-for="UpdateContact" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-2">
+                    <input type="checkbox" class="form-check-input bigCheckbox" asp-for="UpdateContact" />
+                </div>                
+            </div>
+            <div class="form-group row">
+                <label asp-for="workOrder.Room" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-3">
+                    <input asp-for="workOrder.Room" class="form-control" />
+                    <span asp-validation-for="workOrder.Room" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label asp-for="workOrder.Building" class="col-sm-3 col-form-label">Building</label>
+                <div class="col-sm-3">
+                    <select asp-for="workOrder.Building" class="form-select form-select-sm" asp-items="@(new SelectList(Model.buildings, "Id", "Name"))"></select>
+                    <span asp-validation-for="workOrder.Building" class="text-danger"></span>
+                </div>        
+            </div>
+            <div class="form-group row">
+                <label asp-for="workOrder.ComputerTag" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-4">
+					<input asp-for="workOrder.ComputerTag" class="col-sm-4 form-control" />
+					<span asp-validation-for="workOrder.ComputerTag" class="text-danger"></span>
+                </div>                
             </div>
             <div class="form-group">
-                <label asp-for="SubmittedBy" class="control-label"></label>
-                <input asp-for="SubmittedBy" class="form-control" />
-                <span asp-validation-for="SubmittedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RequestDate" class="control-label"></label>
-                <input asp-for="RequestDate" class="form-control" />
-                <span asp-validation-for="RequestDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Technician" class="control-label"></label>
-                <input asp-for="Technician" class="form-control" />
-                <span asp-validation-for="Technician" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FullText" class="control-label"></label>
-                <input asp-for="FullText" class="form-control" />
-                <span asp-validation-for="FullText" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class ="form-control" asp-items="ViewBag.Status"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="TechComments" class="control-label"></label>
-                <input asp-for="TechComments" class="form-control" />
-                <span asp-validation-for="TechComments" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Room" class="control-label"></label>
-                <input asp-for="Room" class="form-control" />
-                <span asp-validation-for="Room" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Building" class="control-label"></label>
-                <input asp-for="Building" class="form-control" />
-                <span asp-validation-for="Building" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ComputerTag" class="control-label"></label>
-                <input asp-for="ComputerTag" class="form-control" />
-                <span asp-validation-for="ComputerTag" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Resolution" class="control-label"></label>
-                <input asp-for="Resolution" class="form-control" />
-                <span asp-validation-for="Resolution" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Rating" class="control-label"></label>
-                <input asp-for="Rating" class="form-control" />
-                <span asp-validation-for="Rating" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RateComment" class="control-label"></label>
-                <input asp-for="RateComment" class="form-control" />
-                <span asp-validation-for="RateComment" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CloseDate" class="control-label"></label>
-                <input asp-for="CloseDate" class="form-control" />
-                <span asp-validation-for="CloseDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedBy" class="control-label"></label>
-                <input asp-for="CreatedBy" class="form-control" />
-                <span asp-validation-for="CreatedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Difficulty" class="control-label"></label>
-                <input asp-for="Difficulty" class="form-control" />
-                <span asp-validation-for="Difficulty" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Review" /> @Html.DisplayNameFor(model => model.Review)
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" /> | 
+                <a asp-action="index" asp-controller="Home" class="btn btn-dark">Cancel</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
