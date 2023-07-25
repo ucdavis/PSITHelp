@@ -166,7 +166,7 @@ namespace ITHelp.Controllers
                 {
                     Message = "Work Order created";
                 }
-                return RedirectToAction(nameof(Details), new { vm.workOrder.Id });
+                return RedirectToAction(nameof(Details), new { woToCreate.Id });
             }
             return View(vm);
         }
