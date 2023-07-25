@@ -31,6 +31,7 @@ namespace ITHelp.Models
         public virtual DbSet<UserRequest> UserRequests { get; set; }
         public virtual DbSet<MigratedGroups> MigratedGroups { get; set; }
         public virtual DbSet<EmployeePreferences> Preferences { get; set; }
+        public virtual DbSet<Notifications> Notifications { get; set; }
 
 
 
