@@ -14,6 +14,7 @@ namespace ITHelp.Models
         public string Building { get; set; }
         public string Room { get; set; }
         public string Email { get; set; }
+        public bool Current { get; set; }
 
         public string Name { 
             get {

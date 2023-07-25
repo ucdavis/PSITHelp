@@ -43,7 +43,7 @@ builder.Services.AddScoped<IdentityService, IdentityService>();
                     if (string.IsNullOrWhiteSpace(kerb)) return;
                     ident.AddClaim(new Claim(ClaimTypes.NameIdentifier, assertion.PrincipalName));
                     var db = context.HttpContext.RequestServices.GetRequiredService<ITHelpContext>();
-                    var user = await db.Employees.Where(e => e.KerberosId == kerb).FirstOrDefaultAsync();
+                    var user = await db.Employees.Where(e => e.KerberosId == kerb && e.Current).FirstOrDefaultAsync();
                     if(user != null)
                     {                       
                         ident.AddClaim(new Claim(ClaimTypes.Surname, user.LastName));
