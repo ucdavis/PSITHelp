@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ITHelp.Controllers
 {
-    [Authorize(Roles = "tech,manager,student")]
-    public class ManagementController1 : Controller
+    [Authorize(Roles = "admin,manager")]
+    public class ManagementController : SuperController
     {
         public IActionResult Index()
         {
