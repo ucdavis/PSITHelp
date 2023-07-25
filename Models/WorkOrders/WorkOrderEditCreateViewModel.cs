@@ -10,6 +10,7 @@ namespace ITHelp.Models
         public List<Buildings> buildings { get; set; }
         [Display(Name ="Save contact to preferences?")]
         public bool UpdateContact { get; set; }
+        public List<Employee> employees { get; set; }
 
         public WorkOrderEditCreateViewModel()
         {
@@ -36,6 +37,18 @@ namespace ITHelp.Models
                     model.workOrder.Contact = $"Phone: {employee.Phone}; Location: {employee.Room} {employee.Building}";
                 }
             }
+            return model;
+        }
+
+        public static async Task<WorkOrderEditCreateViewModel> CreateAdmin(ITHelpContext _context)
+        {
+
+            var model = new WorkOrderEditCreateViewModel
+            {
+                buildings = await _context.Buildings.OrderBy(x => x.Id).ToListAsync(),
+                employees = await _context.Employees.Where(x => x.Current).OrderBy(x => x.LastName).ThenBy(x => x.FirstName).ToListAsync(),
+            };
+            
             return model;
         }
     }
