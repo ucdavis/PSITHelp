@@ -56,6 +56,17 @@ namespace ITHelp.Controllers
             return View(vm);
         }
 
+        public async Task<IActionResult> MyOpen()
+        {
+            var model = await _context.WorkOrders
+                .Where(w => w.Technician == GetTechId() && w.Status != 4)
+                .Include(w => w.StatusTranslate)
+                .Include(w => w.Tech)
+                .Include(w => w.Creator)
+                .ToListAsync();
+            return View(model);
+        }
+
         private string GetTechId()
         {
             return User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value;
