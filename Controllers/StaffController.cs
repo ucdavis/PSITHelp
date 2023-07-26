@@ -67,7 +67,36 @@ namespace ITHelp.Controllers
             return View(model);
         }
 
-        private string GetTechId()
+        public async Task<IActionResult> AllOpen()
+        {
+            var model = await _context.WorkOrders
+                .Where(w => w.Status != 4)
+                .Include(w => w.StatusTranslate)
+                .Include(w => w.Tech)
+                .Include(w => w.Creator)
+                .ToListAsync();
+            return View("MyOpen",model);
+        }
+
+		public async Task<IActionResult> Details(int? id)
+		{
+			if (id == null || _context.WorkOrders == null)
+			{
+				ErrorMessage = "Work order not found";
+				return RedirectToAction(nameof(Index));
+			}
+
+			var workOrders = await _context.WorkOrders
+				.Include(w => w.StatusTranslate)
+				.Include(w => w.Requester)
+				.Include(w => w.Tech)
+				.Include(w => w.Attachments)
+				.FirstOrDefaultAsync(m => m.Id == id);		
+
+			return View(workOrders);
+		}
+
+		private string GetTechId()
         {
             return User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value;
         }

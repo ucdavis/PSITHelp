@@ -81,12 +81,13 @@
 			<input type="text" asp-for="CreatorValue" readonly class="form-control-plaintext">
 		</div>
 	</div>
-	@* TODO Figure out if we need the hardware release form or not
-	@if (this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value == Model.SubmittedBy)
-	{
-	<div>Only shows if user == submitted by</div>
-	<div>Link to hardware release (may not need?????)</div>
-	}*@
+	<div class="form-group row">
+		<label asp-for="Difficulty" class="col-sm-3 col-form-label"></label>
+		<div class="col-sm-9">
+			<input type="text" asp-for="Difficulty" readonly class="form-control-plaintext">
+		</div>
+	</div>
+
 	<div>
 		<hr />
 		@if (Model.Attachments.Any())
