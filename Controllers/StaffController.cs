@@ -30,6 +30,32 @@ namespace ITHelp.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Create(WorkOrderEditCreateViewModel vm)
+        {
+            var woToCreate = new WorkOrders();
+            var woSubmitted = vm.workOrder;
+            var techId = GetTechId();
+            woToCreate.Title = woSubmitted.Title;
+            woToCreate.SubmittedBy = woSubmitted.SubmittedBy;
+            woToCreate.CreatedBy = techId;
+            woToCreate.Technician = techId;
+            woToCreate.FullText = woSubmitted.FullText;
+            woToCreate.Contact = woSubmitted.Contact;            
+            woToCreate.ComputerTag = woSubmitted.ComputerTag;
+            woToCreate.Room = woSubmitted.Room;
+            woToCreate.Building = woSubmitted.Building;
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(woToCreate);
+                await _context.SaveChangesAsync();                
+                Message = "Work Order created";               
+                return RedirectToAction("Details", "WorkOrders", new { woToCreate.Id });
+            }
+            return View(vm);
+        }
+
         private string GetTechId()
         {
             return User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value;

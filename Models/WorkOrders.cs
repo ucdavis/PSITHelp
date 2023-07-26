@@ -11,6 +11,7 @@ namespace ITHelp.Models
         [Display(Name ="Subject")]
         [Required]
         public string Title { get; set; }
+        [Display(Name ="Submitted By")]
         public string SubmittedBy { get; set; }
         public DateTime? RequestDate { get; set; }
         public DateTime? DueDate { get; set; }

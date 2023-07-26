@@ -8,6 +8,12 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group row required">
+                <label asp-for="workOrder.SubmittedBy" class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-3">
+                    <select asp-for="workOrder.SubmittedBy" class="form-select form-select-sm" asp-items="@(new SelectList(Model.employees, "Id", "LastFirstName"))"></select>
+                </div>
+            </div>
+            <div class="form-group row required">
                 <label asp-for="workOrder.Title" class="col-sm-3 col-form-label"></label>
                 <div class="col-sm-9">
                     <input type="text" asp-for="workOrder.Title" class="form-control">
@@ -27,13 +33,7 @@
 					<input asp-for="workOrder.Contact" class="form-control" />
 					<span asp-validation-for="workOrder.Contact" class="text-danger"></span>
                 </div>                
-            </div>
-            <div class="form-group row">
-                <label asp-for="UpdateContact" class="col-sm-3 col-form-label"></label>
-                <div class="col-sm-2">
-                    <input type="checkbox" class="form-check-input bigCheckbox" asp-for="UpdateContact" />
-                </div>                
-            </div>
+            </div>           
             <div class="form-group row">
                 <label asp-for="workOrder.Room" class="col-sm-3 col-form-label"></label>
                 <div class="col-sm-3">
