@@ -1,0 +1,36 @@
+﻿@model List<ITHelp.Models.WorkOrders>
+
+<table class="table datatable table-striped">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Title</th>
+            <th>Full Text</th>
+            <th>Requested</th>
+            <th>Due</th>
+            <th>Requester</th>
+            <th>Tech</th>
+            <th>Status</th>
+            <th>Diff</th>
+            <th>Review?</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="blah @((item.Status ==2 || item.Status == 3) ? "table-info" : (item.DueDate < DateTime.Now) ? "table-danger" : "")">
+
+                <td><a asp-action="details" asp-route-id="@item.Id">@item.Id</a></td>
+                <td>@item.Title</td>
+                <td>@item.FullText</td>
+                <td data-sort="@item.RequestDate.Value.ToFileTimeUtc()">@item.RequestDate.Value.ToShortDateString()</td>
+                <td data-sort="@item.DueDate.Value.ToFileTimeUtc()">@item.DueDate.Value.ToShortDateString()</td>
+                <td>@item.CreatorValue</td>
+                <td>@item.Tech?.Name</td>
+                <td>@item.StatusTranslate.StatusTranslated</td>
+                <td>@item.Difficulty</td>
+                <td><input type="checkbox" asp-for="@item.Review" /></td>
+            </tr>
+        }
+    </tbody>
+</table>
