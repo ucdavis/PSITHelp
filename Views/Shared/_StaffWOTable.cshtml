@@ -42,7 +42,7 @@
                 <td>@item.Tech?.Name</td>
                 <td>@item.StatusTranslate?.StatusTranslated</td>
                 <td>@item.Difficulty</td>
-                <td><input type="checkbox" asp-for="@item.Review" /></td>
+                <td data-sort="@item.Review"><input type="checkbox" asp-for="@item.Review" disabled class="form-check-input" /></td>
             </tr>
         }
     </tbody>
