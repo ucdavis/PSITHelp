@@ -91,6 +91,7 @@ namespace ITHelp.Controllers
 				.Include(w => w.Requester)
 				.Include(w => w.Tech)
 				.Include(w => w.Attachments)
+                .Include(w => w.BuildingName)
 				.FirstOrDefaultAsync(m => m.Id == id);		
 
 			return View(workOrders);

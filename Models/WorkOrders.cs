@@ -48,6 +48,9 @@ namespace ITHelp.Models
         [ForeignKey("CreatedBy")]
         public Employee Creator { get; set;}
 
+        [ForeignKey("Building")]
+        public Buildings BuildingName { get; set; }
+
         [Display(Name ="Created By")]
         public string CreatorValue
         {
