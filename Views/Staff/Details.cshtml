@@ -99,6 +99,19 @@
 			<span class="form-control-plaintext"><input type="checkbox" disabled asp-for="Review" readonly class="form-check-input"></span>
 		</div>
 	</div>
+	<div class="row">
+		<div class="col-sm-2">Print WO (still need???)</div>
+		@if(this.User.IsInRole("admin") || this.User.IsInRole("manager"))
+		{
+			<div class="col-sm-3">Change Difficulty</div>
+		}
+		@if (Model.Difficulty > 1)
+		{
+			<div class="col-sm-3"><a asp-action="Decrease" asp-route-id="@Model.Id" class="btn btn-warning">Decrease Rating</a></div>
+		}
+		<div class="col-sm-3"><a asp-action="ToggleReview" asp-route-id="@Model.Id" class="btn btn-warning">Toggle Review</a></div>
+
+	</div>
 
 	<div>
 		<hr />
@@ -125,7 +138,6 @@
 					<input id="file" name="file" type="file">
 					<input class="btn btn-primary" type="submit" value="Upload" />
 					<br>Allowed files: @Configuration["AllowedFiles"]
-
 				</form>
 			</div>
 		</div>

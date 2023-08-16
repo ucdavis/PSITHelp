@@ -30,6 +30,34 @@ namespace ITHelp.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> ToggleReview(int id)
+        {
+            var woToUpdate = await _context.WorkOrders.Where(w => w.Id == id).FirstOrDefaultAsync();
+            if(woToUpdate==null)
+            {
+                ErrorMessage = "Work Order not found.";
+                return RedirectToAction(nameof(Index));
+            }
+            woToUpdate.Review = !woToUpdate.Review;
+            await _context.SaveChangesAsync();
+            Message = "Review toggled";
+            return RedirectToAction(nameof(Details), new { woToUpdate.Id });
+        }
+
+        public async Task<IActionResult> Decrease(int id)
+        {
+            var woToUpdate = await _context.WorkOrders.Where(w => w.Id == id).FirstOrDefaultAsync();
+            if(woToUpdate == null)
+            {
+                ErrorMessage = "Work Order not found";
+                return RedirectToAction(nameof(Index));
+            }
+            woToUpdate.Difficulty = woToUpdate.Difficulty - 1;
+            await _context.SaveChangesAsync();
+            Message = "Difficulty decreased";
+            return RedirectToAction(nameof(Details), new { woToUpdate.Id });
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create(WorkOrderEditCreateViewModel vm)
         {
@@ -51,7 +79,7 @@ namespace ITHelp.Controllers
                 _context.Add(woToCreate);
                 await _context.SaveChangesAsync();                
                 Message = "Work Order created";               
-                return RedirectToAction("Details", "WorkOrders", new { woToCreate.Id });
+                return RedirectToAction(nameof(Details), new { woToCreate.Id });
             }
             return View(vm);
         }
