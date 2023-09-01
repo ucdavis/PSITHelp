@@ -70,6 +70,9 @@ namespace ITHelp.Models
         [ForeignKey("WOId")]
         public ICollection<Files> Attachments { get; set; }
 
+        [ForeignKey("WOId")]
+        public ICollection<Actions> Actions { get; set; }
+
         public WorkOrders()
         {
             RequestDate = DateTime.Now;

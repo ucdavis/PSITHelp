@@ -120,9 +120,38 @@ namespace ITHelp.Controllers
 				.Include(w => w.Tech)
 				.Include(w => w.Attachments)
                 .Include(w => w.BuildingName)
+                .Include(w => w.Actions)
+                .ThenInclude(w => w.SubmittedEmployee)
 				.FirstOrDefaultAsync(m => m.Id == id);		
 
 			return View(workOrders);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> AddComment(int id, string comment)
+		{
+			var woToComment = await _context.WorkOrders.Include(w => w.Tech).Where(w => w.Id == id).FirstOrDefaultAsync();
+			if (woToComment == null)
+			{
+				ErrorMessage = "Work Order not found";
+				return RedirectToAction(nameof(Index));
+			}
+            var newAction = new Actions
+            {
+                WOId = woToComment.Id,
+                Date = DateTime.Now,
+                Text = comment,
+                SubmittedBy = GetTechId()
+			};
+			if (ModelState.IsValid)
+			{
+				_context.Add(newAction);				
+				await _context.SaveChangesAsync();
+				Message = "Comment added.";
+				return RedirectToAction(nameof(Details), new { woToComment.Id });
+			}
+			ErrorMessage = "Something went wrong";
+			return RedirectToAction(nameof(Details), new { woToComment.Id });
 		}
 
 		private string GetTechId()
