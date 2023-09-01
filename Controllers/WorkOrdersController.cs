@@ -114,8 +114,41 @@ namespace ITHelp.Controllers
             return RedirectToAction(nameof(Details), new { id });
         }
 
-        // GET: WorkOrders/Create
-        public async Task<IActionResult> Create()
+        [HttpPost]
+        public async Task<IActionResult> AddComment(int id, string comment)
+        { 
+            var woToComment = await _context.WorkOrders.Include(w => w.Tech).Where(w => w.Id == id).FirstOrDefaultAsync();
+            if (woToComment == null)
+            {
+                ErrorMessage = "Work Order not found";
+                return RedirectToAction(nameof(Index));
+            }
+			if (!CheckWOPermissison(woToComment))
+			{
+				ErrorMessage = "You don't have permission to that work order.";
+				return RedirectToAction(nameof(Index));
+			}
+            var newAction = new Actions
+            {
+                WOId = woToComment.Id,
+                Date = DateTime.Now,
+                Text = comment,
+                SubmittedBy = GetUserId()
+			};
+			if (ModelState.IsValid)
+			{
+				_context.Add(newAction);				
+				await _notificationService.WorkOrderCommentByClient(woToComment);
+				await _context.SaveChangesAsync();
+                Message = "Comment added and tech emailed";
+				return RedirectToAction(nameof(Details), new { woToComment.Id });
+			}
+            ErrorMessage = "Something went wrong";
+			return RedirectToAction(nameof(Details), new { woToComment.Id });
+		}
+
+		// GET: WorkOrders/Create
+		public async Task<IActionResult> Create()
         {
             var model = await WorkOrderEditCreateViewModel.Create(_context, GetUserId());
             return View(model);
@@ -157,7 +190,7 @@ namespace ITHelp.Controllers
             {
                 _context.Add(woToCreate);
                 await _context.SaveChangesAsync();
-                await _notificationService.WorkOrderCreated(woToCreate);
+                await _notificationService.WorkOrderCreated(woToCreate, tech.First().UCDEmail);
                 await _context.SaveChangesAsync();
                 if(vm.UpdateContact)
                 {

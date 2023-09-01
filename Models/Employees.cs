@@ -27,5 +27,12 @@ namespace ITHelp.Models
                 return LastName + ", " + FirstName;
             }
         }
+        public string UCDEmail
+        {
+            get
+            {
+                return $"{Email}@ucdavis.edu";
+            }
+        }
     }
 }

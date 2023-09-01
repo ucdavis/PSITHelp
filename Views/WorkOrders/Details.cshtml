@@ -86,13 +86,7 @@
 		<div class="col-sm-9">
 			<input type="text" asp-for="CreatorValue" readonly class="form-control-plaintext">
 		</div>
-	</div>
-	@* TODO Figure out if we need the hardware release form or not
-	@if (this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value == Model.SubmittedBy)
-	{
-	<div>Only shows if user == submitted by</div>
-	<div>Link to hardware release (may not need?????)</div>
-	}*@
+	</div>	
 	<div>
 		<hr />
 		@if (Model.Attachments.Any())
@@ -122,5 +116,20 @@
 				</form>
 			</div>
 		</div>
+	</div>
+	<div>
+		<hr />
+		<form asp-action="AddComment">
+			<input type="hidden" id="id" name="id" value="@Model.Id" />
+			<div class="form-group row">
+				<label for="Comment" class="col-sm-3 col-form-label">New Comment/Action:</label>
+				<div class="col-sm-9">
+					<textarea id="comment" name="comment" rows="3" cols="50"></textarea>
+				</div>
+			</div>
+			<div class="row">
+				<input type="submit" class="btn btn-primary" value="Add Comment (tech will be notified)"/>
+			</div>
+		</form>
 	</div>
 </div>
