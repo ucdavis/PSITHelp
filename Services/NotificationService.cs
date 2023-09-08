@@ -7,7 +7,10 @@ namespace ITHelp.Services
     {
         Task WorkOrderCreated(WorkOrders wo, string techEmail);
         Task WorkOrderCommentByClient(WorkOrders wo);
-    }
+        Task WorkOrderCommentByTech(WorkOrders wo, Actions action);
+        Task WorkOrderClosedByTech(WorkOrders wo, Actions action);
+
+	}
 
     public class NotificationService : INotificationService
     {
@@ -36,6 +39,27 @@ namespace ITHelp.Services
 				WoId = wo.Id,
 				Email = wo.Tech.UCDEmail,
 				Message = "Work Order commented by client"
+			};
+			_context.Add(notice);
+		}
+        
+        public async Task WorkOrderCommentByTech(WorkOrders wo, Actions action)
+        {
+            var notice = new Notifications
+            {
+                WoId = wo.Id,
+                Email = wo.Requester.UCDEmail,
+                Message = $"Work Order comment by tech: {action.Text}"
+            };
+            _context.Add(notice);
+        }
+		public async Task WorkOrderClosedByTech(WorkOrders wo, Actions action)
+		{
+			var notice = new Notifications
+			{
+				WoId = wo.Id,
+				Email = wo.Requester.UCDEmail,
+				Message = $"Work Order completed by tech: {action.Text}"
 			};
 			_context.Add(notice);
 		}

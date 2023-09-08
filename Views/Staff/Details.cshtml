@@ -154,10 +154,42 @@
 					<textarea id="comment" name="comment" rows="3" cols="50"></textarea>
 				</div>
 			</div>
-			<div class="row">
-				<input type="submit" class="btn btn-primary" value="Add Comment (tech will be notified)" />
+			<div class="form-group row">
+				<label for="Email" class="col-sm-3 col-form-label">Email Requestor?</label>
+				<div class="col-sm-9">
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="emailRequestor" id="Yes" value="Yes">
+						<label class="form-check-label" for="Yes">Yes</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="emailRequestor" id="No" value="No" checked>
+						<label class="form-check-label" for="No">No</label>
+					</div>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="Status" class="col-sm-3 col-form-label">Update Status?</label>
+				<div class="col-sm-9">
+					<select id="Status" name="statusChange">
+						<option value="0">Do not change</option>
+						<option value="1">Open</option>
+						<option value="2">Awaiting parts</option>
+						<option value="3">Awaiting User</option>
+						<option value="4">Closed</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="ServiceTag" class="col-sm-3 col-form-label">Service Tag</label>
+				<div class="col-sm-9">
+					<input type="text" name="ServiceTag" id="ServiceTag" value="@Model.ComputerTag" />
+				</div>
+			</div>
+			<div class="row col-sm-2">
+				<input type="submit" class="btn btn-primary" value="Add Comment" />
 			</div>
 		</form>
+		<hr />
 	</div>	
 		@if(Model.Actions.Any())
 		{

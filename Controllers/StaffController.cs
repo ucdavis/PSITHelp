@@ -130,9 +130,14 @@ namespace ITHelp.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> AddComment(int id, string comment)
+		public async Task<IActionResult> AddComment(int id, string comment, string emailRequestor, int statusChange, string serviceTag)
 		{
-			var woToComment = await _context.WorkOrders.Include(w => w.Tech).Where(w => w.Id == id).FirstOrDefaultAsync();
+			if(string.IsNullOrWhiteSpace(comment))
+            {
+                ErrorMessage = "Comment cannot be blank";
+                return RedirectToAction(nameof(Details), new {id});
+            }
+            var woToComment = await _context.WorkOrders.Include(w => w.Requester).Where(w => w.Id == id).FirstOrDefaultAsync();
 			if (woToComment == null)
 			{
 				ErrorMessage = "Work Order not found";
@@ -145,6 +150,23 @@ namespace ITHelp.Controllers
                 Text = comment,
                 SubmittedBy = GetTechId()
 			};
+            if(!string.IsNullOrWhiteSpace(serviceTag) && woToComment.ComputerTag != serviceTag)
+            {
+                woToComment.ComputerTag = serviceTag;
+            }            
+            if(statusChange != 0)
+            {
+                woToComment.Status = statusChange;
+            }
+            if(emailRequestor == "Yes" && statusChange != 4)
+            {
+                await _notificationService.WorkOrderCommentByTech(woToComment, newAction);
+            }
+            else if(statusChange == 4)
+            {
+                await _notificationService.WorkOrderClosedByTech(woToComment, newAction);
+                woToComment.Resolution = comment;
+            }
 			if (ModelState.IsValid)
 			{
 				_context.Add(newAction);				
