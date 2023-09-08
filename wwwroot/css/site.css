@@ -18,6 +18,10 @@ table.dataTable tbody th, table.dataTable tbody td {
     margin-bottom: 0rem !important;
 }
 
+.form-control-plaintext {
+    padding: 0 !important;
+}
+
 .bigCheckbox {
     width: 30px !important;
     height: 30px !important;
@@ -36,6 +40,7 @@ div.required label.col-form-label:after {
 
 .col-form-label {
     font-weight: bold;
+    padding: 0 !important;
 }
 
 .navbar-nav {
