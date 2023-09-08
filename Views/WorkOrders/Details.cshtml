@@ -75,12 +75,15 @@
 			</div>
 		</div>
 	}
-	<div class="form-group row">
-		<label asp-for="CloseDate" class="col-sm-3 col-form-label"></label>
-		<div class="col-sm-9">
-			<input type="text" asp-for="CloseDate" readonly class="form-control-plaintext">
+	@if (Model.CloseDate.HasValue)
+	{
+		<div class="form-group row">
+			<label asp-for="CloseDate" class="col-sm-3 col-form-label"></label>
+			<div class="col-sm-9">
+				<input type="text" asp-for="CloseDate" readonly class="form-control-plaintext">
+			</div>
 		</div>
-	</div>
+	}
 	<div class="form-group row">
 		<label asp-for="CreatorValue" class="col-sm-3 col-form-label"></label>
 		<div class="col-sm-9">
@@ -103,8 +106,8 @@
 				</tbody>
 			</table>
 		}
-		<a asp-action="addFile" asp-route-id="Id" class="btn btn-info">Add New Attachment</a>
-		<div class="card">
+		<a class="btn btn-info" data-bs-toggle="collapse" href="#AddAttachment" role="button" aria-expanded="false" aria-controls="AddAttachment">Add New Attachment</a>
+		<div class="card collapse" id="AddAttachment">
 			<div class="card-body">
 				<h5 class="card-title">Add New Attachment</h5>
 				<form enctype="multipart/form-data" method="post" asp-action="AddFile">
