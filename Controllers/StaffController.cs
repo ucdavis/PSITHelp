@@ -12,11 +12,13 @@ namespace ITHelp.Controllers
     {
         private readonly ITHelpContext _context;        
         private readonly INotificationService _notificationService;
+		private readonly IFileIOService _fileService;
 
-        public StaffController(ITHelpContext context, INotificationService notificationService)
+		public StaffController(ITHelpContext context, IFileIOService fileService, INotificationService notificationService)
         {
             _context = context;
             _notificationService = notificationService;
+            _fileService = fileService;
         }
 
         public IActionResult Index()
@@ -152,6 +154,39 @@ namespace ITHelp.Controllers
 			}
 			ErrorMessage = "Something went wrong";
 			return RedirectToAction(nameof(Details), new { woToComment.Id });
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> AddFile(int id, IFormFile file)
+		{
+			var wo = await _context.WorkOrders.Where(w => w.Id == id).FirstOrDefaultAsync();
+			if (wo == null)
+			{
+				ErrorMessage = "Work Order not found or you do not have permission to that work order.";
+				return RedirectToAction(nameof(Index));
+			}
+
+			var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+			if (_fileService.CheckDeniedExtension(ext))
+			{
+				ErrorMessage = "File extension not allowed!";
+				return RedirectToAction(nameof(Details), new { id });
+			}
+
+			if (file.Length > 0)
+			{
+
+				var attach = new Files();
+				attach.WOId = wo.Id;
+				attach.Name = file.FileName;
+				attach.Extension = ext;
+				_context.Add(attach);
+				await _context.SaveChangesAsync();
+				await _fileService.SaveWorkOrderFile(wo, attach.Id, file);
+				Message = "File uploaded";
+			}
+			return RedirectToAction(nameof(Details), new { id });
 		}
 
 		private string GetTechId()
