@@ -14,6 +14,7 @@ namespace ITHelp.Models
         public string Building { get; set; }
         public string Room { get; set; }
         public string Email { get; set; }
+        public bool Current { get; set; }
 
         public string Name { 
             get {
@@ -24,6 +25,13 @@ namespace ITHelp.Models
         public string LastFirstName { 
             get {
                 return LastName + ", " + FirstName;
+            }
+        }
+        public string UCDEmail
+        {
+            get
+            {
+                return $"{Email}@ucdavis.edu";
             }
         }
     }

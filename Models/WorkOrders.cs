@@ -11,6 +11,7 @@ namespace ITHelp.Models
         [Display(Name ="Subject")]
         [Required]
         public string Title { get; set; }
+        [Display(Name ="Submitted By")]
         public string SubmittedBy { get; set; }
         public DateTime? RequestDate { get; set; }
         public DateTime? DueDate { get; set; }
@@ -47,6 +48,9 @@ namespace ITHelp.Models
         [ForeignKey("CreatedBy")]
         public Employee Creator { get; set;}
 
+        [ForeignKey("Building")]
+        public Buildings BuildingName { get; set; }
+
         [Display(Name ="Created By")]
         public string CreatorValue
         {
@@ -65,6 +69,9 @@ namespace ITHelp.Models
 
         [ForeignKey("WOId")]
         public ICollection<Files> Attachments { get; set; }
+
+        [ForeignKey("WOId")]
+        public ICollection<Actions> Actions { get; set; }
 
         public WorkOrders()
         {

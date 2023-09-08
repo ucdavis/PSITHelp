@@ -83,6 +83,16 @@ namespace ITHelp.Models
 				entity.ToView("buildings");
 			});
 
+			modelBuilder.Entity<Actions>(entity =>
+			{
+				entity.ToTable("wo_actions");
+                entity.Property(e =>e.Id).HasColumnName("action_id");
+				entity.Property(e => e.WOId).HasColumnName("wo_id");
+				entity.Property(e => e.Date).HasColumnName("action_date");
+				entity.Property(e => e.Text).HasColumnName("action_text");
+				entity.Property(e => e.SubmittedBy).HasColumnName("submitted_by");
+			});
+
 			modelBuilder.Entity<WorkOrders>(entity =>
             {
                 entity.ToTable("work_orders");
