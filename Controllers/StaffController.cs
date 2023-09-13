@@ -32,6 +32,20 @@ namespace ITHelp.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> Edit(int id)
+        {
+            var model = await WorkOrderEditCreateViewModel.EditAdmin(_context, id);
+
+            if (model.workOrder == null)
+            {
+                ErrorMessage = "Work order not found";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(model);
+
+        }
+
         public async Task<IActionResult> ToggleReview(int id)
         {
             var woToUpdate = await _context.WorkOrders.Where(w => w.Id == id).FirstOrDefaultAsync();
@@ -108,14 +122,8 @@ namespace ITHelp.Controllers
             return View("MyOpen",model);
         }
 
-		public async Task<IActionResult> Details(int? id)
+		public async Task<IActionResult> Details(int id)
 		{
-			if (id == null || _context.WorkOrders == null)
-			{
-				ErrorMessage = "Work order not found";
-				return RedirectToAction(nameof(Index));
-			}
-
 			var workOrders = await _context.WorkOrders
 				.Include(w => w.StatusTranslate)
 				.Include(w => w.Requester)
@@ -124,9 +132,15 @@ namespace ITHelp.Controllers
                 .Include(w => w.BuildingName)
                 .Include(w => w.Actions)
                 .ThenInclude(w => w.SubmittedEmployee)
-				.FirstOrDefaultAsync(m => m.Id == id);		
+				.FirstOrDefaultAsync(m => m.Id == id);
 
-			return View(workOrders);
+            if (workOrders == null)
+            {
+                ErrorMessage = "Work order not found";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(workOrders);
 		}
 
 		[HttpPost]

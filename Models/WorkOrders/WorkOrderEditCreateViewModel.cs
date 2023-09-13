@@ -51,5 +51,23 @@ namespace ITHelp.Models
             
             return model;
         }
+
+        public static async Task<WorkOrderEditCreateViewModel> EditAdmin(ITHelpContext _context, int id)
+        {
+
+            var model = new WorkOrderEditCreateViewModel
+            {
+                workOrder = await _context.WorkOrders
+                .Include(w => w.StatusTranslate)
+                .Include(w => w.Requester)
+                .Include(w => w.Tech)
+                .Include(w => w.BuildingName)
+                .FirstOrDefaultAsync(m => m.Id == id),
+                buildings = await _context.Buildings.OrderBy(x => x.Id).ToListAsync(),
+                employees = await _context.Employees.Where(x => x.Current).OrderBy(x => x.LastName).ThenBy(x => x.FirstName).ToListAsync(),
+            };
+
+            return model;
+        }
     }
 }

@@ -210,59 +210,7 @@ namespace ITHelp.Controllers
         }
 
 
-        // GET: WorkOrders/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.WorkOrders == null)
-            {
-                return NotFound();
-            }
-
-            var workOrders = await _context.WorkOrders.FindAsync(id);
-            if (workOrders == null)
-            {
-                return NotFound();
-            }
-            ViewData["Status"] = new SelectList(_context.Set<Status>(), "Id", "Id", workOrders.Status);
-            return View(workOrders);
-        }
-
-        // POST: WorkOrders/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,SubmittedBy,RequestDate,Technician,FullText,Status,TechComments,Phone,Room,Building,ComputerTag,Resolution,Rating,RateComment,CloseDate,CreatedBy,Difficulty,Review")] WorkOrders workOrders)
-        {
-            if (id != workOrders.Id)
-            {
-                return NotFound();
-            }
-
-            //if (ModelState.IsValid)
-            //{
-            //    try
-            //    {
-            //        _context.Update(workOrders);
-            //        await _context.SaveChangesAsync();
-            //    }
-            //    catch (DbUpdateConcurrencyException)
-            //    {
-            //        if (!WorkOrdersExists(workOrders.Id))
-            //        {
-            //            return NotFound();
-            //        }
-            //        else
-            //        {
-            //            throw;
-            //        }
-            //    }
-            //    return RedirectToAction(nameof(Index));
-            //}
-            ViewData["Status"] = new SelectList(_context.Set<Status>(), "Id", "Id", workOrders.Status);
-            return View(workOrders);
-        }
-
+       
         private bool CheckWOPermissison(WorkOrders wo)
         {
             if(User.IsInRole("student") || User.IsInRole("tech") || User.IsInRole("manager") || User.IsInRole("admin"))
