@@ -11,6 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddScoped<IFileIOService, FileIOService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IFullCallService, FullCallService>();
 
 builder.Services.AddDbContext<ITHelpContext>(o =>
             {

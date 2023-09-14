@@ -15,12 +15,14 @@ namespace ITHelp.Controllers
         private readonly ITHelpContext _context;        
         private readonly INotificationService _notificationService;
 		private readonly IFileIOService _fileService;
+        private readonly IFullCallService _fullCall;
 
-		public StaffController(ITHelpContext context, IFileIOService fileService, INotificationService notificationService)
+		public StaffController(ITHelpContext context, IFileIOService fileService, INotificationService notificationService, IFullCallService fullCall)
         {
             _context = context;
             _notificationService = notificationService;
             _fileService = fileService;
+            _fullCall = fullCall;
         }
 
         public IActionResult Index()
@@ -75,6 +77,27 @@ namespace ITHelp.Controllers
 			return View(model);
 
 		}
+
+        public async Task<IActionResult> Merge(int id)
+        {
+            var model = await _fullCall.SummaryWO().Where(w => w.Id == id).FirstOrDefaultAsync();
+			if (model == null)
+			{
+				ErrorMessage = "Work Order not found.";
+				return RedirectToAction(nameof(Index));
+			}
+            return View(model);
+		}
+
+        public async Task<IActionResult> GetWOSummary(int id)
+        {
+			var model = await _fullCall.SummaryWO().Where(w => w.Id == id).FirstOrDefaultAsync();
+			if (model == null)
+            {                
+                return Content("Work Order not found!");
+            }
+            return PartialView("_WorkOrderSummary", model);
+        }
 
         public async Task<IActionResult> ToggleReview(int id)
         {
