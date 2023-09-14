@@ -3,6 +3,7 @@ using ITHelp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
@@ -96,8 +97,8 @@ namespace ITHelp.Controllers
                 ErrorMessage = "Work Order ID's either equal or set to zero";
                 return RedirectToAction(nameof(Index));
             }
-            var parentWo = await _context.WorkOrders.Where(w => w.Id == parentId).FirstOrDefaultAsync();
-            var childWo = await _context.WorkOrders.Where(w => w.Id == childId).FirstOrDefaultAsync();
+            var parentWo = await _context.WorkOrders.Include(w=> w.Tech).Where(w => w.Id == parentId).FirstOrDefaultAsync();
+            var childWo = await _context.WorkOrders.Include(w=> w.Tech).Where(w => w.Id == childId).FirstOrDefaultAsync();
 
 			if (parentWo == null || childWo == null)
 			{
@@ -124,9 +125,9 @@ namespace ITHelp.Controllers
                 Text = $"Work Order merged with WO ID: {parentWo.Id}",
                 SubmittedBy = who,
             };
-
             _context.Add(ParentComment);
             _context.Add(ChildComment);
+            await _notificationService.WorkOrderMerged(parentWo, childWo, GetTechName());
             await _context.SaveChangesAsync();
 
 			Message = "Merge completed";
@@ -307,5 +308,12 @@ namespace ITHelp.Controllers
         {
             return User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value;
         }
+
+        private string GetTechName()
+        {
+            var firstName = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName).Value;
+            var lastName = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Surname).Value;
+			return $"{firstName} {lastName}";
+		}
     }
 }
