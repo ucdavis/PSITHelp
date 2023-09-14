@@ -29,6 +29,7 @@ namespace ITHelp.Services
 				.Include(w=> w.BuildingName)
 				.Include(w=> w.Attachments)
 				.Include(w => w.Actions)
+				.ThenInclude(w => w.SubmittedEmployee)
 				.AsQueryable();
 			return wo;
 		}
@@ -38,7 +39,8 @@ namespace ITHelp.Services
 			var wo = _context.WorkOrders
 				.Include(w => w.Requester)
 				.Include(w => w.Tech)
-				.Include(w => w.StatusTranslate)				
+				.Include(w => w.StatusTranslate)
+				.Include(w => w.Creator)
 				.AsQueryable();
 			return wo;
 		}

@@ -19,22 +19,21 @@ namespace ITHelp.Controllers
         private readonly ITHelpContext _context;
         private readonly IFileIOService _fileService;
         private readonly INotificationService _notificationService;
+        private readonly IFullCallService _fullCall;
 
-        public WorkOrdersController(ITHelpContext context, IFileIOService fileService, INotificationService notificationService)
+        public WorkOrdersController(ITHelpContext context, IFileIOService fileService, INotificationService notificationService, IFullCallService fullcall)
         {
             _context = context;
             _fileService = fileService;
             _notificationService = notificationService;
+            _fullCall = fullcall;
         }
 
         // GET: WorkOrders
         public async Task<IActionResult> Index()
         {
             var userId = GetUserId();
-            var model = await _context.WorkOrders
-                .Include(w => w.StatusTranslate)
-                .Include(w => w.Tech)
-                .Where(w => w.SubmittedBy == userId).ToListAsync();
+            var model = await _fullCall.SummaryWO().Where(w => w.SubmittedBy == userId).ToListAsync();
             return View(model);
         }
 
@@ -47,12 +46,7 @@ namespace ITHelp.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var workOrders = await _context.WorkOrders
-                .Include(w => w.StatusTranslate)
-                .Include(w => w.Requester)
-                .Include(w => w.Tech)
-                .Include(w => w.Attachments)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var workOrders = await _fullCall.FullWO().FirstOrDefaultAsync(m => m.Id == id);
             if (workOrders == null || !CheckWOPermissison(workOrders))
             {
                 ErrorMessage = "Work order not found or that is not your work order";
