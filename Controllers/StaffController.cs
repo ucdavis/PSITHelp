@@ -62,8 +62,8 @@ namespace ITHelp.Controllers
             workOrderToUpdate.Building = workOrderEditted.Building;
             workOrderToUpdate.ComputerTag = workOrderEditted?.ComputerTag;
 
-			var results = new List<ValidationResult>();
-			if (Validator.TryValidateObject(workOrderToUpdate, new ValidationContext(workOrderToUpdate),results))
+			var validationErrors = new List<ValidationResult>();
+			if (Validator.TryValidateObject(workOrderToUpdate, new ValidationContext(workOrderToUpdate), validationErrors, validateAllProperties: true))
 			{
 				await _context.SaveChangesAsync();
 				Message = "Work Order updated";
