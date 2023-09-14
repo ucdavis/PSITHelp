@@ -1,0 +1,57 @@
+﻿@model ITHelp.Models.WorkOrderEditCreateViewModel
+
+<form asp-action="Edit">
+<div>
+	<hr />
+	<div class="form-group row">
+		<label asp-for="workOrder.Id" class="col-sm-3 col-form-label"></label>
+		<div class="col-sm-9">
+			<input type="text" asp-for="workOrder.Id" readonly class="form-control-plaintext">
+			<input type="hidden" asp-for="workOrder.Id" />
+		</div>
+	</div>
+	<div class="form-group row">
+		<label asp-for="workOrder.Title" class="col-sm-3 col-form-label"></label>
+		<div class="col-sm-9">
+			<input type="text" asp-for="workOrder.Title" readonly class="form-control-plaintext">
+		</div>
+	</div>
+	<div class="form-group row">
+		<label asp-for="workOrder.Requester.Name" class="col-sm-3 col-form-label">Requested By</label>
+		<div class="col-sm-9">
+			<select asp-for="workOrder.SubmittedBy" class="form-select form-select-sm" asp-items="@(new SelectList(Model.employees, "Id", "LastFirstName"))"></select>
+		</div>
+	</div>
+	<div class="form-group row">
+		<label asp-for="workOrder.Contact" class="col-sm-3 col-form-label"></label>
+		<div class="col-sm-9">
+			<input type="text" asp-for="workOrder.Contact" class="form-control">
+			<span asp-validation-for="workOrder.Contact" class="text-danger"></span>
+		</div>
+	</div>
+	<div class="form-group row">
+		<label asp-for="workOrder.Room" class="col-sm-3 col-form-label"></label>
+		<div class="col-sm-2">
+			<input asp-for="workOrder.Room" class="form-control" />
+			<span asp-validation-for="workOrder.Room" class="text-danger"></span>
+		</div>		
+	</div>
+	<div class="form-group row">
+		<label asp-for="workOrder.Building" class="col-sm-3 col-form-label"></label>
+		<div class="col-sm-2">
+			<select asp-for="workOrder.Building" class="form-select form-select-sm" asp-items="@(new SelectList(Model.buildings, "Id", "Name"))"></select>
+		</div>
+	</div>
+	<div class="form-group row">
+		<label asp-for="workOrder.ComputerTag" class="col-sm-3 col-form-label"></label>
+		<div class="col-sm-9">
+			<input type="text" asp-for="workOrder.ComputerTag" class="form-control">
+			<span asp-validation-for="workOrder.ComputerTag" class="text-danger"></span>
+		</div>
+	</div>	
+	<div class="form-group">
+		<input type="submit" value="Update" class="btn btn-primary" /> | 
+		<a asp-action="details" asp-route-id="@Model.workOrder.Id" class="btn btn-dark">Cancel</a>
+	</div>
+</div>
+</form>

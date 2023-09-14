@@ -3,22 +3,26 @@ using ITHelp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace ITHelp.Controllers
 {
-    [Authorize (Roles = "tech,manager,student,admin")]
+	[Authorize (Roles = "tech,manager,student,admin")]
     public class StaffController : SuperController
     {
         private readonly ITHelpContext _context;        
         private readonly INotificationService _notificationService;
 		private readonly IFileIOService _fileService;
+        private readonly IFullCallService _fullCall;
 
-		public StaffController(ITHelpContext context, IFileIOService fileService, INotificationService notificationService)
+		public StaffController(ITHelpContext context, IFileIOService fileService, INotificationService notificationService, IFullCallService fullCall)
         {
             _context = context;
             _notificationService = notificationService;
             _fileService = fileService;
+            _fullCall = fullCall;
         }
 
         public IActionResult Index()
@@ -30,6 +34,115 @@ namespace ITHelp.Controllers
         {
             var model = await WorkOrderEditCreateViewModel.CreateAdmin(_context);
             return View(model);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var model = await WorkOrderEditCreateViewModel.EditAdmin(_context, id);
+            if (model.workOrder == null)
+            {
+                ErrorMessage = "Work order not found";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, WorkOrderEditCreateViewModel vm)
+        {
+            var workOrderEditted = vm.workOrder;
+            var workOrderToUpdate = await _context.WorkOrders.Where(w => w.Id == id).FirstOrDefaultAsync();
+			if (workOrderToUpdate == null || workOrderToUpdate.Id != workOrderEditted.Id)
+			{
+				ErrorMessage = "Work order not found";
+				return RedirectToAction(nameof(Index));
+			}
+
+            workOrderToUpdate.SubmittedBy = workOrderEditted.SubmittedBy;
+            workOrderToUpdate.Contact = workOrderEditted.Contact;
+            workOrderToUpdate.Room = workOrderEditted.Room;
+            workOrderToUpdate.Building = workOrderEditted.Building;
+            workOrderToUpdate.ComputerTag = workOrderEditted?.ComputerTag;
+
+			var validationErrors = new List<ValidationResult>();
+			if (Validator.TryValidateObject(workOrderToUpdate, new ValidationContext(workOrderToUpdate), validationErrors, validateAllProperties: true))
+			{
+				await _context.SaveChangesAsync();
+				Message = "Work Order updated";
+				return RedirectToAction(nameof(Details), new { workOrderToUpdate.Id });
+			}
+
+			var model = await WorkOrderEditCreateViewModel.EditAdmin(_context, id);
+            ErrorMessage = "Something is wrong!";
+			return View(model);
+
+		}
+
+        public async Task<IActionResult> Merge(int id)
+        {
+            var model = await _fullCall.SummaryWO().Where(w => w.Id == id).FirstOrDefaultAsync();
+			if (model == null)
+			{
+				ErrorMessage = "Work Order not found.";
+				return RedirectToAction(nameof(Index));
+			}
+            return View(model);
+		}
+
+        [HttpPost]
+        public async Task<IActionResult> CompleteMerge(int parentId, int childId)
+        {
+            if(parentId == childId || parentId == 0 || childId == 0)
+            {
+                ErrorMessage = "Work Order ID's either equal or set to zero";
+                return RedirectToAction(nameof(Index));
+            }
+            var parentWo = await _context.WorkOrders.Include(w=> w.Tech).Where(w => w.Id == parentId).FirstOrDefaultAsync();
+            var childWo = await _context.WorkOrders.Include(w=> w.Tech).Where(w => w.Id == childId).FirstOrDefaultAsync();
+
+			if (parentWo == null || childWo == null)
+			{
+				ErrorMessage = "Work Order not found!";
+				return RedirectToAction(nameof(Index));
+			}
+			var childActions = await _context.Actions.Where(w => w.WOId == childId).ToListAsync();
+            var who = GetTechId();
+            
+            childActions.ForEach(a => a.WOId = parentId);
+			childWo.Status = 4;
+
+            var ParentComment = new Actions
+            {
+                WOId = parentId,
+                Date = DateTime.Now,
+                Text = $"Text from merged WO ID: {childWo.Id} Description: {childWo.FullText}",
+                SubmittedBy = who,
+            };
+            var ChildComment = new Actions
+            {
+                WOId = childId,
+                Date = DateTime.Now,
+                Text = $"Work Order merged with WO ID: {parentWo.Id}",
+                SubmittedBy = who,
+            };
+            _context.Add(ParentComment);
+            _context.Add(ChildComment);
+            await _notificationService.WorkOrderMerged(parentWo, childWo, GetTechName());
+            await _context.SaveChangesAsync();
+
+			Message = "Merge completed";
+			return RedirectToAction(nameof(Details), new { parentWo.Id });
+		}
+
+
+		public async Task<IActionResult> GetWOSummary(int id)
+        {
+			var model = await _fullCall.SummaryWO().Where(w => w.Id == id).FirstOrDefaultAsync();
+			if (model == null)
+            {                
+                return Content("Work Order not found!");
+            }
+            return PartialView("_WorkOrderSummary", model);
         }
 
         public async Task<IActionResult> ToggleReview(int id)
@@ -88,45 +201,25 @@ namespace ITHelp.Controllers
 
         public async Task<IActionResult> MyOpen()
         {
-            var model = await _context.WorkOrders
-                .Where(w => w.Technician == GetTechId() && w.Status != 4)
-                .Include(w => w.StatusTranslate)
-                .Include(w => w.Tech)
-                .Include(w => w.Creator)
-                .ToListAsync();
+            var model = await _fullCall.SummaryWO().Where(w => w.Technician == GetTechId() && w.Status != 4).ToListAsync();
             return View(model);
         }
 
         public async Task<IActionResult> AllOpen()
         {
-            var model = await _context.WorkOrders
-                .Where(w => w.Status != 4)
-                .Include(w => w.StatusTranslate)
-                .Include(w => w.Tech)
-                .Include(w => w.Creator)
-                .ToListAsync();
+            var model = await _fullCall.SummaryWO().Where(w => w.Status != 4).ToListAsync();
             return View("MyOpen",model);
         }
 
-		public async Task<IActionResult> Details(int? id)
+		public async Task<IActionResult> Details(int id)
 		{
-			if (id == null || _context.WorkOrders == null)
-			{
-				ErrorMessage = "Work order not found";
-				return RedirectToAction(nameof(Index));
-			}
-
-			var workOrders = await _context.WorkOrders
-				.Include(w => w.StatusTranslate)
-				.Include(w => w.Requester)
-				.Include(w => w.Tech)
-				.Include(w => w.Attachments)
-                .Include(w => w.BuildingName)
-                .Include(w => w.Actions)
-                .ThenInclude(w => w.SubmittedEmployee)
-				.FirstOrDefaultAsync(m => m.Id == id);		
-
-			return View(workOrders);
+			var workOrders = await _fullCall.FullWO().FirstOrDefaultAsync(m => m.Id == id);
+            if (workOrders == null)
+            {
+                ErrorMessage = "Work order not found";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(workOrders);
 		}
 
 		[HttpPost]
@@ -215,5 +308,12 @@ namespace ITHelp.Controllers
         {
             return User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value;
         }
+
+        private string GetTechName()
+        {
+            var firstName = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName).Value;
+            var lastName = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Surname).Value;
+			return $"{firstName} {lastName}";
+		}
     }
 }

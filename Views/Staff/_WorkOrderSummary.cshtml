@@ -1,0 +1,45 @@
+﻿@model ITHelp.Models.WorkOrders
+
+<input type="hidden" name="childId" id="childId" value="@Model.Id" />
+<div class="form-group row">
+	<label asp-for="Id" class="col-sm-3 col-form-label"></label>
+	<div class="col-sm-9">
+		@Model.Id
+	</div>
+</div>
+<div class="form-group row">
+	<label asp-for="Title" class="col-sm-3 col-form-label"></label>
+	<div class="col-sm-9">
+		@Model.Title
+	</div>
+</div>
+<div class="form-group row">
+	<label asp-for="Requester.Name" class="col-sm-3 col-form-label">Requested By</label>
+	<div class="col-sm-9">
+		@Model.Requester.Name
+	</div>
+</div>
+<div class="form-group row">
+	<label asp-for="RequestDate" class="col-sm-3 col-form-label">Requested</label>
+	<div class="col-sm-9">
+		@Model.RequestDate.ToString()
+	</div>
+</div>
+<div class="form-group row">
+	<label asp-for="Tech.Name" class="col-sm-3 col-form-label">Technician</label>
+	<div class="col-sm-9">
+		@Model.Tech.Name
+	</div>
+</div>
+<div class="form-group row">
+	<label asp-for="StatusTranslate.StatusTranslated" class="col-sm-3 col-form-label"></label>
+	<div class="col-sm-9">
+		@Model.StatusTranslate.StatusTranslated
+	</div>
+</div>
+<div class="form-group">
+	<label asp-for="FullText" class="col-sm-12 col-form-label"></label>
+	<div class="col-sm-12 border">
+		@Model.FullText
+	</div>
+</div>

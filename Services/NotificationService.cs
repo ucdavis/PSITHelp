@@ -9,6 +9,7 @@ namespace ITHelp.Services
         Task WorkOrderCommentByClient(WorkOrders wo);
         Task WorkOrderCommentByTech(WorkOrders wo, Actions action);
         Task WorkOrderClosedByTech(WorkOrders wo, Actions action);
+        Task WorkOrderMerged(WorkOrders parentWo, WorkOrders childWo, string techName);
 
 	}
 
@@ -63,5 +64,26 @@ namespace ITHelp.Services
 			};
 			_context.Add(notice);
 		}
+
+        public async Task WorkOrderMerged(WorkOrders parentWo, WorkOrders childWo, string techName)
+        {
+            var notice = new Notifications
+            {
+                WoId = parentWo.Id,
+                Email = parentWo.Tech.UCDEmail,
+                Message = $"{techName} Merged the following work orders: Parent: {parentWo.Id} Child: {childWo.Id}",
+            };
+            _context.Add(notice);
+            if(parentWo.Technician != childWo.Technician)
+            {
+				var secondNotice = new Notifications
+				{
+					WoId = parentWo.Id,
+					Email = childWo.Tech.UCDEmail,
+					Message = $"{techName} Merged the following work orders: Parent: {parentWo.Id} Child: {childWo.Id}",
+				};
+                _context.Add(secondNotice);
+			}
+        }
 	}
 }
