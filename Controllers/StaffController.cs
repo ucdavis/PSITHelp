@@ -1,8 +1,10 @@
 ﻿using ITHelp.Models;
 using ITHelp.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace ITHelp.Controllers
@@ -35,16 +37,44 @@ namespace ITHelp.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var model = await WorkOrderEditCreateViewModel.EditAdmin(_context, id);
-
             if (model.workOrder == null)
             {
                 ErrorMessage = "Work order not found";
                 return RedirectToAction(nameof(Index));
             }
-
             return View(model);
-
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, WorkOrderEditCreateViewModel vm)
+        {
+            var workOrderEditted = vm.workOrder;
+            var workOrderToUpdate = await _context.WorkOrders.Where(w => w.Id == id).FirstOrDefaultAsync();
+			if (workOrderToUpdate == null || workOrderToUpdate.Id != workOrderEditted.Id)
+			{
+				ErrorMessage = "Work order not found";
+				return RedirectToAction(nameof(Index));
+			}
+
+            workOrderToUpdate.SubmittedBy = workOrderEditted.SubmittedBy;
+            workOrderToUpdate.Contact = workOrderEditted.Contact;
+            workOrderToUpdate.Room = workOrderEditted.Room;
+            workOrderToUpdate.Building = workOrderEditted.Building;
+            workOrderToUpdate.ComputerTag = workOrderEditted?.ComputerTag;
+
+			var results = new List<ValidationResult>();
+			if (Validator.TryValidateObject(workOrderToUpdate, new ValidationContext(workOrderToUpdate),results))
+			{
+				await _context.SaveChangesAsync();
+				Message = "Work Order updated";
+				return RedirectToAction(nameof(Details), new { workOrderToUpdate.Id });
+			}
+
+			var model = await WorkOrderEditCreateViewModel.EditAdmin(_context, id);
+            ErrorMessage = "Something is wrong!";
+			return View(model);
+
+		}
 
         public async Task<IActionResult> ToggleReview(int id)
         {

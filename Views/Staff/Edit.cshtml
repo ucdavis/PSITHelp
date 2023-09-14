@@ -26,12 +26,14 @@
 		<label asp-for="workOrder.Contact" class="col-sm-3 col-form-label"></label>
 		<div class="col-sm-9">
 			<input type="text" asp-for="workOrder.Contact" class="form-control">
+			<span asp-validation-for="workOrder.Contact" class="text-danger"></span>
 		</div>
 	</div>
 	<div class="form-group row">
 		<label asp-for="workOrder.Room" class="col-sm-3 col-form-label"></label>
 		<div class="col-sm-2">
 			<input asp-for="workOrder.Room" class="form-control" />
+			<span asp-validation-for="workOrder.Room" class="text-danger"></span>
 		</div>		
 	</div>
 	<div class="form-group row">
@@ -44,6 +46,7 @@
 		<label asp-for="workOrder.ComputerTag" class="col-sm-3 col-form-label"></label>
 		<div class="col-sm-9">
 			<input type="text" asp-for="workOrder.ComputerTag" class="form-control">
+			<span asp-validation-for="workOrder.ComputerTag" class="text-danger"></span>
 		</div>
 	</div>	
 	<div class="form-group">

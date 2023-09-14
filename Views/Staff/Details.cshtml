@@ -112,7 +112,7 @@
 			<div class="col-sm-3"><a asp-action="Decrease" asp-route-id="@Model.Id" class="btn btn-warning">Decrease Rating</a></div>
 		}
 		<div class="col-sm-3"><a asp-action="ToggleReview" asp-route-id="@Model.Id" class="btn btn-warning">Toggle Review</a></div>
-
+		<div class="col-sm-3"><a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-info">Edit</a></div>
 	</div>
 
 	<div>
@@ -185,7 +185,7 @@
 					<input type="text" name="ServiceTag" id="ServiceTag" value="@Model.ComputerTag" />
 				</div>
 			</div>
-			<div class="row col-sm-2">
+			<div class="form-group">
 				<input type="submit" class="btn btn-primary" value="Add Comment" />
 			</div>
 		</form>
