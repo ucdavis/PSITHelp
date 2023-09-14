@@ -1,0 +1,69 @@
+﻿@model ITHelp.Models.WorkOrders
+
+
+<div>
+	<div class="card text-dark bg-light mb-3">
+		<div class="card-header">This will be the Master Work Order!</div>
+		<div class="card-body">
+			@await Html.PartialAsync("_WorkOrderSummary", @Model)
+			
+		</div>
+	</div>	
+	<hr />
+	<div class="form-group row">
+		<label for="woToMerge" class="col-sm-3 col-form-label">Work Order to merge</label>
+		<div class="col-sm-9">
+			<input type="number" id="woToMerge" name="woToMerge" />
+			<input type="button" class="btn btn-primary" onclick="getChildWorkOrder()" value="Retrieve WO to merge" />
+		</div>		
+	</div>
+	<div class="card text-white bg-secondary mb-3 collapse" id="childCard">
+		<div class="card-header">This Work Order will be closed!</div>
+		<div class="card-body">
+			<h4>Attachments and checklists will NOT be moved.</h4>
+			<div id="childWorkOrderDiv"></div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+     
+    <script type="application/javascript">
+		function getChildWorkOrder() 
+		{
+			
+			if(!$("#woToMerge").val())
+			{
+				alert("Warning: No WorkOrder ID entered. Please update and try again");
+				return;
+			}
+			let id = $("#woToMerge").val();
+
+			let data = {
+				id: id,
+			};
+			let vs = $("#childWorkOrderDiv");
+			$.ajax({
+				type: "GET",
+				url: "/staff/GetWOSummary",
+				data: data,
+				success: function (res) {	
+					console.log(res);
+					vs.empty();
+					// No varieties were found
+					if (res.length === 0) {
+						alert("Warning: No Work Order found. Please update and try again");
+					}
+					vs.append(res);
+					$("#childCard").show();
+
+				},
+				error: function (res) {
+					alert("There was an error processing the request");
+				}
+			});
+			
+
+		}
+	</script>
+}

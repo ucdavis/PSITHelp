@@ -105,14 +105,16 @@
 	<div class="row">		
 		@if(this.User.IsInRole("admin") || this.User.IsInRole("manager"))
 		{
-			<div class="col-sm-3">Change Difficulty</div>
+			<div class="col-sm-2">Change Difficulty</div>
 		}
 		@if (Model.Difficulty > 1)
 		{
-			<div class="col-sm-3"><a asp-action="Decrease" asp-route-id="@Model.Id" class="btn btn-warning">Decrease Rating</a></div>
+			<div class="col-sm-2"><a asp-action="Decrease" asp-route-id="@Model.Id" class="btn btn-warning">Decrease Rating</a></div>
 		}
-		<div class="col-sm-3"><a asp-action="ToggleReview" asp-route-id="@Model.Id" class="btn btn-warning">Toggle Review</a></div>
-		<div class="col-sm-3"><a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-info">Edit</a></div>
+		<div class="col-sm-2"><a asp-action="ToggleReview" asp-route-id="@Model.Id" class="btn btn-warning">Toggle Review</a></div>
+		<div class="col-sm-2"><a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-info">Edit</a></div>
+		<div class="col-sm-2"><a asp-action="Merge" asp-route-id="@Model.Id" class="btn btn-info">Merge</a></div>
+
 	</div>
 
 	<div>
