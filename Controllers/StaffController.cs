@@ -1,7 +1,6 @@
 ﻿using ITHelp.Models;
 using ITHelp.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
@@ -9,7 +8,7 @@ using System.Security.Claims;
 
 namespace ITHelp.Controllers
 {
-    [Authorize (Roles = "tech,manager,student,admin")]
+	[Authorize (Roles = "tech,manager,student,admin")]
     public class StaffController : SuperController
     {
         private readonly ITHelpContext _context;        
@@ -89,7 +88,53 @@ namespace ITHelp.Controllers
             return View(model);
 		}
 
-        public async Task<IActionResult> GetWOSummary(int id)
+        [HttpPost]
+        public async Task<IActionResult> CompleteMerge(int parentId, int childId)
+        {
+            if(parentId == childId || parentId == 0 || childId == 0)
+            {
+                ErrorMessage = "Work Order ID's either equal or set to zero";
+                return RedirectToAction(nameof(Index));
+            }
+            var parentWo = await _context.WorkOrders.Where(w => w.Id == parentId).FirstOrDefaultAsync();
+            var childWo = await _context.WorkOrders.Where(w => w.Id == childId).FirstOrDefaultAsync();
+
+			if (parentWo == null || childWo == null)
+			{
+				ErrorMessage = "Work Order not found!";
+				return RedirectToAction(nameof(Index));
+			}
+			var childActions = await _context.Actions.Where(w => w.WOId == childId).ToListAsync();
+            var who = GetTechId();
+            
+            childActions.ForEach(a => a.WOId = parentId);
+			childWo.Status = 4;
+
+            var ParentComment = new Actions
+            {
+                WOId = parentId,
+                Date = DateTime.Now,
+                Text = $"Text from merged WO ID: {childWo.Id} Description: {childWo.FullText}",
+                SubmittedBy = who,
+            };
+            var ChildComment = new Actions
+            {
+                WOId = childId,
+                Date = DateTime.Now,
+                Text = $"Work Order merged with WO ID: {parentWo.Id}",
+                SubmittedBy = who,
+            };
+
+            _context.Add(ParentComment);
+            _context.Add(ChildComment);
+            await _context.SaveChangesAsync();
+
+			Message = "Merge completed";
+			return RedirectToAction(nameof(Details), new { parentWo.Id });
+		}
+
+
+		public async Task<IActionResult> GetWOSummary(int id)
         {
 			var model = await _fullCall.SummaryWO().Where(w => w.Id == id).FirstOrDefaultAsync();
 			if (model == null)
@@ -155,44 +200,24 @@ namespace ITHelp.Controllers
 
         public async Task<IActionResult> MyOpen()
         {
-            var model = await _context.WorkOrders
-                .Where(w => w.Technician == GetTechId() && w.Status != 4)
-                .Include(w => w.StatusTranslate)
-                .Include(w => w.Tech)
-                .Include(w => w.Creator)
-                .ToListAsync();
+            var model = await _fullCall.SummaryWO().Where(w => w.Technician == GetTechId() && w.Status != 4).ToListAsync();
             return View(model);
         }
 
         public async Task<IActionResult> AllOpen()
         {
-            var model = await _context.WorkOrders
-                .Where(w => w.Status != 4)
-                .Include(w => w.StatusTranslate)
-                .Include(w => w.Tech)
-                .Include(w => w.Creator)
-                .ToListAsync();
+            var model = await _fullCall.SummaryWO().Where(w => w.Status != 4).ToListAsync();
             return View("MyOpen",model);
         }
 
 		public async Task<IActionResult> Details(int id)
 		{
-			var workOrders = await _context.WorkOrders
-				.Include(w => w.StatusTranslate)
-				.Include(w => w.Requester)
-				.Include(w => w.Tech)
-				.Include(w => w.Attachments)
-                .Include(w => w.BuildingName)
-                .Include(w => w.Actions)
-                .ThenInclude(w => w.SubmittedEmployee)
-				.FirstOrDefaultAsync(m => m.Id == id);
-
+			var workOrders = await _fullCall.FullWO().FirstOrDefaultAsync(m => m.Id == id);
             if (workOrders == null)
             {
                 ErrorMessage = "Work order not found";
                 return RedirectToAction(nameof(Index));
             }
-
             return View(workOrders);
 		}
 

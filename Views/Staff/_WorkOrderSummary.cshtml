@@ -1,44 +1,45 @@
 ﻿@model ITHelp.Models.WorkOrders
 
+<input type="hidden" name="childId" id="childId" value="@Model.Id" />
 <div class="form-group row">
 	<label asp-for="Id" class="col-sm-3 col-form-label"></label>
 	<div class="col-sm-9">
-		<input type="text" asp-for="Id" readonly class="form-control-plaintext">
+		@Model.Id
 	</div>
 </div>
 <div class="form-group row">
 	<label asp-for="Title" class="col-sm-3 col-form-label"></label>
 	<div class="col-sm-9">
-		<input type="text" asp-for="Title" readonly class="form-control-plaintext">
+		@Model.Title
 	</div>
 </div>
 <div class="form-group row">
 	<label asp-for="Requester.Name" class="col-sm-3 col-form-label">Requested By</label>
 	<div class="col-sm-9">
-		<input type="text" asp-for="Requester.Name" readonly class="form-control-plaintext">
+		@Model.Requester.Name
 	</div>
 </div>
 <div class="form-group row">
 	<label asp-for="RequestDate" class="col-sm-3 col-form-label">Requested</label>
 	<div class="col-sm-9">
-		<input type="text" asp-for="RequestDate" readonly class="form-control-plaintext">
+		@Model.RequestDate.ToString()
 	</div>
 </div>
 <div class="form-group row">
 	<label asp-for="Tech.Name" class="col-sm-3 col-form-label">Technician</label>
 	<div class="col-sm-9">
-		<input type="text" asp-for="Tech.Name" readonly class="form-control-plaintext">
+		@Model.Tech.Name
 	</div>
 </div>
 <div class="form-group row">
 	<label asp-for="StatusTranslate.StatusTranslated" class="col-sm-3 col-form-label"></label>
 	<div class="col-sm-9">
-		<input type="text" asp-for="StatusTranslate.StatusTranslated" readonly class="form-control-plaintext">
+		@Model.StatusTranslate.StatusTranslated
 	</div>
 </div>
 <div class="form-group">
 	<label asp-for="FullText" class="col-sm-12 col-form-label"></label>
 	<div class="col-sm-12 border">
-		<textarea class="form-control-plaintext" style="height: 200px;" readonly asp-for="FullText"></textarea>
+		@Model.FullText
 	</div>
 </div>

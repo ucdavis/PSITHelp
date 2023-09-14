@@ -1,9 +1,22 @@
 ﻿@model ITHelp.Models.WorkOrders
 
-
+<form asp-action="Merge" method="post">
+	<div>
+		<div class="form-group row">
+			<label for="id" class="col-sm-3 col-form-label">Parent Work Order ID</label>
+			<div class="col-sm-3">
+				<input type="number" id="id" name="id" class="form-control" value="@Model.Id" />
+				
+			</div>
+			<div class="col-sm-3">
+				<input type="submit" class="btn btn-primary" value="Look Up" />
+			</div>
+		</div>
+	</div>
+</form>
 <div>
 	<div class="card text-dark bg-light mb-3">
-		<div class="card-header">This will be the Master Work Order!</div>
+		<div class="card-header">This will be the Parent Work Order!</div>
 		<div class="card-body">
 			@await Html.PartialAsync("_WorkOrderSummary", @Model)
 			
@@ -20,8 +33,16 @@
 	<div class="card text-white bg-secondary mb-3 collapse" id="childCard">
 		<div class="card-header">This Work Order will be closed!</div>
 		<div class="card-body">
-			<h4>Attachments and checklists will NOT be moved.</h4>
-			<div id="childWorkOrderDiv"></div>
+			<h4>Attachments will NOT be moved.</h4>
+			<div>
+				<form asp-action="CompleteMerge">
+					<input type="hidden" id="parentId" name="parentId" value="@Model.Id" />
+					<div id="childWorkOrderDiv"></div>
+					<hr />
+					<input type="submit" class="btn btn-danger" value="Merge Work Orders" /> |
+					<a asp-action="index" class="btn btn-dark">Cancel</a>
+				</form>				
+			</div>
 		</div>
 	</div>
 </div>
