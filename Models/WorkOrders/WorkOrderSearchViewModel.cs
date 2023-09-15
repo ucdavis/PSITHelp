@@ -59,6 +59,14 @@ namespace ITHelp.Models
 				{
 					woToSearch = woToSearch.Where(w => EF.Functions.Like(w.Requester.Name, "%" + vm.RequesterToSearch + "%"));
 				}
+				if(!string.IsNullOrWhiteSpace(vm.TechnicianToSearch))
+				{
+					woToSearch = woToSearch.Where(w => EF.Functions.Like(w.Tech.Name, "%" + vm.TechnicianToSearch + "%"));
+				}
+				if(!string.IsNullOrWhiteSpace(vm.TagToSearch))
+				{
+					woToSearch = woToSearch.Where(w => EF.Functions.Like(w.ComputerTag, "%" + vm.TagToSearch + "%"));
+				}
 
 				var viewModel = new WorkOrderSearchViewModel
 				{
