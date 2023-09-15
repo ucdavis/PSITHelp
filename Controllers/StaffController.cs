@@ -30,6 +30,19 @@ namespace ITHelp.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Search()
+        {
+            var model = await WorkOrderSearchViewModel.Create(_context, null, _fullCall);
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Search(WorkOrderSearchViewModel vm)
+        {
+            var model = await WorkOrderSearchViewModel.Create(_context, vm, _fullCall);
+            return View(model);
+        }
+
         public async Task<IActionResult> Create()
         {
             var model = await WorkOrderEditCreateViewModel.CreateAdmin(_context);
