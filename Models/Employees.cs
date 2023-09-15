@@ -16,12 +16,9 @@ namespace ITHelp.Models
         public string Email { get; set; }
         public bool Current { get; set; }
 
-        public string Name { 
-            get {
-                return FirstName + " " + LastName;
-            }
-        }
+        public string Name { get; set; }
 
+        
         public string LastFirstName { 
             get {
                 return LastName + ", " + FirstName;
