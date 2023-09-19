@@ -1,0 +1,52 @@
+﻿@model List<ITHelp.Models.UserReequestPermissionsSummary>
+
+<div>
+	<table class="table table-striped datatable">
+		<thead>
+			<tr>
+				<th>First Name</th>
+				<th>Last Names</th>
+				<th>AD Group</th>
+				<th>Base Group</th>
+				<th>On Behalf Of</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach(var row in Model)
+			{
+				<tr>
+					<td>@row.FirstName</td>
+					<td>@row.LastName</td>
+					<td>@row.ADGroup</td>
+					<td>@row.BaseGroup</td>
+					<td>@row.OnBehalfOf</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+
+@section Scripts {
+
+	<script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css" />
+
+	<script>
+		$(document).ready(function () {
+			$('.datatable').DataTable({
+				dom: 'lfrtip',
+				pageLength: 100,
+				columnDefs: [{
+					targets: 2,
+					searchable: true,
+					visible: false
+				}],
+				order: [[1, 'asc']]
+			});
+		});
+
+	</script>
+
+
+}
+

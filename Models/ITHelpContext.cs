@@ -33,11 +33,13 @@ namespace ITHelp.Models
         public virtual DbSet<EmployeePreferences> Preferences { get; set; }
         public virtual DbSet<Notifications> Notifications { get; set; }
         public virtual DbSet<AssignmentStats> AssignmentStats { get; set; }
+        public virtual DbSet<UserReequestPermissionsSummary> UserReequestPermissionsSummary { get; set; }
 
 
 
 
-        public static ILoggerFactory GetLoggerFactory()
+
+		public static ILoggerFactory GetLoggerFactory()
         {
             IServiceCollection serviceCollection = new ServiceCollection();
             serviceCollection.AddLogging(builder =>
@@ -88,6 +90,11 @@ namespace ITHelp.Models
 			{
 				entity.Property(e => e.Id).HasColumnName("groupId");
 			});
+
+            modelBuilder.Entity<UserReequestPermissionsSummary>(entity =>
+            {
+                entity.HasNoKey();
+            });
 
 			modelBuilder.Entity<Actions>(entity =>
 			{

@@ -113,6 +113,13 @@ namespace ITHelp.Controllers
 			return View(update);
 		}
 
+        public async Task<IActionResult> UserPermissions()
+        {
+            var model = await _context.UserReequestPermissionsSummary.FromSqlRaw($"EXEC mvc_new_user_permission_list").ToListAsync();
+            return View(model);
+
+        }
+
 
 		public async Task<IActionResult> Edit(int id)
         {
