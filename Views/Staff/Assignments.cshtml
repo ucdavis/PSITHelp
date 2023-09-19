@@ -1,0 +1,65 @@
+﻿@model ITHelp.Models.AssignmentsViewModel
+
+<div>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>First</th>
+				<th>Last</th>
+				<th>Weighted #</th>
+				<th>Total</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var row in Model.ticketCounts)
+			{
+				<tr>
+					<td>@row.FirstName</td>
+					<td>@row.LastName</td>
+					<td>@row.WeightedCount</td>
+					<td>@row.TotalCount</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+<div>
+	<hr />
+</div>
+<div>
+	<table class="table">
+		<thead>
+			<tr>
+				<td>Assign Round Robin?</td>
+				<td>Reset Date</td>
+				<td>Next ticket goes to</td>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var row in Model.scheme)
+			{
+				<tr>
+					<td><input type="checkbox" class="bigCheckbox" value="@row.AssignRoundRobin" /></td>
+					<td>@row.ResetDate.ToShortDateString()</td>
+					<td>@row.NextTech</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+<div>
+	If Round Robin checked: tickets will be assigned to each tech in order of previous tickets. Otherwise, tickets will go to the tech with the lowest ticket weight. Note "Start New work order" from the staff menu always assigns to the person submitting that form.
+	Ticket weight and count is based on tickets submitted on or after the reset date. Any ticket submitted before that is ignored for the weighted ticket assignment scheme.
+</div>
+
+
+@section Scripts {
+	@{
+		<script>
+			$(document).ready(function () {
+				$(":checkbox").on("click", false);				
+			});
+		</script>
+	}
+}
+

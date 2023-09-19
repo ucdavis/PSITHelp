@@ -4,5 +4,7 @@
     {
         public bool AssignRoundRobin { get; set; }
         public DateTime ResetDate { get; set; }
+
+        public string NextTech { get; set; }
     }
 }

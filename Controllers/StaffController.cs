@@ -49,7 +49,72 @@ namespace ITHelp.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Assignments()
+        {
+            var model = await AssignmentsViewModel.Create(_context);
+            return View(model);
+        }
+
+        public async Task<IActionResult> MigratedGroups()
+        {
+            var model = await _context.MigratedGroups.OrderBy(w => w.LastName).ThenBy(w => w.FirstName).ToListAsync();
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> NewGroup(string firstName, string lastName)
+        {
+            var newGroup = new MigratedGroups
+            {
+                FirstName = firstName,
+                LastName = lastName
+            };
+            if (ModelState.IsValid)
+            {
+                _context.Add(newGroup);
+                await _context.SaveChangesAsync();
+                Message = "New group created";
+                return RedirectToAction(nameof(MigratedGroups));
+            }
+			var model = await _context.MigratedGroups.OrderBy(w => w.LastName).ThenBy(w => w.FirstName).ToListAsync();
+			return View(model);
+		}
+
+        public async Task<IActionResult> EditGroup(int id)
+        {
+            var model = await _context.MigratedGroups.Where(g => g.Id == id).FirstOrDefaultAsync();
+            if(model == null)
+            {
+                ErrorMessage = "Group not found";
+                return RedirectToAction(nameof(MigratedGroups));
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+		public async Task<IActionResult> EditGroup(int id, MigratedGroups update)
+		{
+            var groupToUpdate = await _context.MigratedGroups.Where(g => g.Id == id).FirstOrDefaultAsync();
+			if (groupToUpdate == null || groupToUpdate.Id != update.Id)
+			{
+				ErrorMessage = "Group not found";
+				return RedirectToAction(nameof(MigratedGroups));
+			}
+            groupToUpdate.FirstName = update.FirstName;
+            groupToUpdate.LastName = update.LastName;   
+
+            if(ModelState.IsValid)
+            {
+                await _context.SaveChangesAsync();
+                Message = "Group updated";
+                return RedirectToAction(nameof(MigratedGroups));
+            }
+
+			return View(update);
+		}
+
+
+		public async Task<IActionResult> Edit(int id)
         {
             var model = await WorkOrderEditCreateViewModel.EditAdmin(_context, id);
             if (model.workOrder == null)
