@@ -39,7 +39,7 @@
 			@foreach (var row in Model.scheme)
 			{
 				<tr>
-					<td><input type="checkbox" class="bigCheckbox" value="@row.AssignRoundRobin" /></td>
+					<td><input type="checkbox" class="bigCheckbox" checked="@row.AssignRoundRobin" /></td>
 					<td>@row.ResetDate.ToShortDateString()</td>
 					<td>@row.NextTech</td>
 				</tr>
