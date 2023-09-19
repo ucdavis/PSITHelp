@@ -35,12 +35,7 @@
 		$(document).ready(function () {
 			$('.datatable').DataTable({
 				dom: 'lfrtip',
-				pageLength: 100,
-				columnDefs: [{
-					targets: 2,
-					searchable: true,
-					visible: false
-				}],
+				pageLength: 100,				
 				order: [[1, 'asc']]
 			});
 		});
