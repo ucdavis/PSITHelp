@@ -55,8 +55,17 @@
                                 <li><a class="nav-link text-light" asp-action="UserPermissions" asp-controller="Staff">New User Permissions</a></li>
                             </ul>
                         </li>                       
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-controller="Management" asp-action="Index">Management Home</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-light dropdown-toggle" asp-controller="Management" asp-action="Index" id="navbarDarkDropdownMenuLinkManagement" role="button" data-bs-toggle="dropdown" aria-expanded="false">Management Home</a>
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                                <li><a class="nav-link text-light" asp-action="NewUserPermissions" asp-controller="Management">New User Permissions</a></li>
+                                <li><a class="nav-link text-light" asp-action="Reassign" asp-controller="Management">Reassign/Change Dif</a></li>
+                                <li><a class="nav-link text-light" asp-action="BulkReassign" asp-controller="Management">Bulk Reassign</a></li>
+                                <li><a class="nav-link text-light" asp-action="Membership" asp-controller="Management">Custom Membership</a></li>
+                                <hr />
+                                <li><a class="nav-link text-light" asp-action="Roles" asp-controller="Management">Adjust Roles/Assignment Scheme</a></li>
+                                <li><a class="nav-link text-light" asp-action="Delete" asp-controller="Management">Delete Work Orders</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
