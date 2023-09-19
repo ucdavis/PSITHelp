@@ -11,14 +11,12 @@ namespace ITHelp.Controllers
     {
         private readonly ITHelpContext _context;
         private readonly INotificationService _notificationService;
-        private readonly IFileIOService _fileService;
         private readonly IFullCallService _fullCall;
 
-        public ManagementController(ITHelpContext context, IFileIOService fileService, INotificationService notificationService, IFullCallService fullCall)
+        public ManagementController(ITHelpContext context, INotificationService notificationService, IFullCallService fullCall)
         {
             _context = context;
             _notificationService = notificationService;
-            _fileService = fileService;
             _fullCall = fullCall;
         }
         public IActionResult Index()
@@ -26,7 +24,19 @@ namespace ITHelp.Controllers
             return View();
         }
 
-        public async Task<IActionResult> NewUserPermissions()
+        public async Task<IActionResult> ChangeTechOrRating(int id)
+        {
+            var model = await WorkOrderEditCreateViewModel.EditManagement(_context, id);
+            if(model.workOrder == null)
+            {
+                ErrorMessage = "Work Order not found";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(model);
+        }
+
+
+		public async Task<IActionResult> NewUserPermissions()
         {
             var model = await _fullCall.FullUserRequestPermission()
                 .OrderBy(p => p.Current)

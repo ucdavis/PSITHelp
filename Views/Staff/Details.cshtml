@@ -105,7 +105,7 @@
 	<div class="row">		
 		@if(this.User.IsInRole("admin") || this.User.IsInRole("manager"))
 		{
-			<div class="col-sm-2">Change Difficulty</div>
+			<div class="col-sm-2"><a asp-action="ChangeTechOrRating" asp-controller="Management" asp-route-id="@Model.Id" class="btn btn-warning">Change Tech/Rating</a></div>
 		}
 		@if (Model.Difficulty > 1)
 		{
