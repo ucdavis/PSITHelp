@@ -32,11 +32,14 @@ namespace ITHelp.Models
         public virtual DbSet<MigratedGroups> MigratedGroups { get; set; }
         public virtual DbSet<EmployeePreferences> Preferences { get; set; }
         public virtual DbSet<Notifications> Notifications { get; set; }
+        public virtual DbSet<AssignmentStats> AssignmentStats { get; set; }
+        public virtual DbSet<UserReequestPermissionsSummary> UserReequestPermissionsSummary { get; set; }
 
 
 
 
-        public static ILoggerFactory GetLoggerFactory()
+
+		public static ILoggerFactory GetLoggerFactory()
         {
             IServiceCollection serviceCollection = new ServiceCollection();
             serviceCollection.AddLogging(builder =>
@@ -83,6 +86,16 @@ namespace ITHelp.Models
 				entity.ToView("buildings");
 			});
 
+			modelBuilder.Entity<MigratedGroups>(entity =>
+			{
+				entity.Property(e => e.Id).HasColumnName("groupId");
+			});
+
+            modelBuilder.Entity<UserReequestPermissionsSummary>(entity =>
+            {
+                entity.HasNoKey();
+            });
+
 			modelBuilder.Entity<Actions>(entity =>
 			{
 				entity.ToTable("wo_actions");
@@ -113,7 +126,15 @@ namespace ITHelp.Models
 
             modelBuilder.Entity<AssignScheme>(entity =>
             {
-                entity.HasNoKey();                
+                entity.HasNoKey();
+                entity.Property(e => e.AssignRoundRobin).HasColumnName("assign_round_robin");
+                entity.Property(e => e.ResetDate).HasColumnName("reset_date");
+                entity.Property(e => e.NextTech).HasColumnName("next_tech");
+            });
+
+            modelBuilder.Entity<AssignmentStats>(entity =>
+            {
+                entity.HasNoKey();
             });
 
             modelBuilder.Entity<Files>(entity =>

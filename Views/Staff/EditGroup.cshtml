@@ -1,0 +1,35 @@
+﻿@model ITHelp.Models.MigratedGroups
+
+
+
+<form asp-action="EditGroup">
+<div>
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		<input type="hidden" asp-for="Id" />
+	<hr />
+	<div class="form-group row">
+		<label asp-for="FirstName" class="col-sm-3 col-form-label"></label>
+		<div class="col-sm-9">
+			<input type="text" asp-for="FirstName" class="form-control">
+				<span asp-validation-for="FirstName" class="text-danger"></span>
+		</div>
+	</div>
+	<div class="form-group row">
+		<label asp-for="LastName" class="col-sm-3 col-form-label"></label>
+		<div class="col-sm-2">
+				<input asp-for="LastName" class="form-control" />
+				<span asp-validation-for="LastName" class="text-danger"></span>
+		</div>		
+	</div>
+	<div>
+		<input type="submit" class="btn btn-primary" value="Update" /> | 
+		<a asp-action="MigratedGroups" class="btn btn-dark">Cancel</a>
+	</div>
+</div>
+</form>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}

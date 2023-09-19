@@ -2,6 +2,7 @@
 
 <form asp-action="Edit">
 <div>
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 	<hr />
 	<div class="form-group row">
 		<label asp-for="workOrder.Id" class="col-sm-3 col-form-label"></label>
@@ -55,3 +56,9 @@
 	</div>
 </div>
 </form>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}
