@@ -20,7 +20,18 @@ namespace ITHelp.Models
             };
             
             return model;
-        }        
-    }
+        }
+		public static async Task<UserRequestPermissionViewModel> CreateNew(ITHelpContext _context)
+		{
+
+			var model = new UserRequestPermissionViewModel
+			{
+				permission = new UserRequestPermissions(),
+				employees = await _context.Employees.OrderBy(e => e.LastName).ThenBy(e => e.FirstName).ToListAsync()
+			};
+
+			return model;
+		}
+	}
 }
 

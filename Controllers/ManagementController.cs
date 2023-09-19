@@ -68,8 +68,42 @@ namespace ITHelp.Controllers
             {
                 await _context.SaveChangesAsync();
                 Message = "User request permission updated";
-            }
-			return RedirectToAction(nameof(NewUserPermissions));
+				return RedirectToAction(nameof(NewUserPermissions));
+			}
+            ErrorMessage = "Something went wrong";
+			var model = await UserRequestPermissionViewModel.CreateEdit(_context, _fullCall, id);
+			return View(model);
+		}
+
+        public async Task<IActionResult> NewUserPermission()
+        {
+			var model = await UserRequestPermissionViewModel.CreateNew(_context);
+            return View(model);
+		}
+
+        [HttpPost]
+        public async Task<IActionResult> NewUserPermission(UserRequestPermissionViewModel vm)
+        {
+            var newPermission = vm.permission;
+            var permissionToCreate = new UserRequestPermissions();
+
+			permissionToCreate.PIEmployeeId = newPermission.PIEmployeeId;
+			permissionToCreate.DelegateId = newPermission.DelegateId;
+			permissionToCreate.Current = true;
+			permissionToCreate.SDrive = newPermission.SDrive;
+			permissionToCreate.ADGroup = newPermission.ADGroup;
+			permissionToCreate.BaseGroup = newPermission.BaseGroup;
+
+            if(ModelState.IsValid)
+            {
+                _context.Add(permissionToCreate);
+                _context.SaveChangesAsync();
+                Message = "User request permission created";
+                return RedirectToAction(nameof(NewUserPermissions));
+			}
+            ErrorMessage = "Something went wrong";
+			var model = await UserRequestPermissionViewModel.CreateNew(_context);
+			return View(model);
 		}
 
 	}
