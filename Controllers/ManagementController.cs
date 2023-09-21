@@ -67,11 +67,13 @@ namespace ITHelp.Controllers
         [HttpPost]
         public async Task<IActionResult> BulkReassign(int[] reassign, string Technician)
         {
-            var workOrdersToReassign = await _context.WorkOrders.Where(w => reassign.Contains(w.Id)).ToListAsync();
-			workOrdersToReassign.ForEach(w=> w.Technician = Technician);
-
-            var model = await WorkOrderBulkReassignViewModel.Create(_context, _fullCall);
-			return View(model);
+            var workOrdersToReassign = await _context.WorkOrders.Include(w => w.Tech).Where(w => reassign.Contains(w.Id)).ToListAsync();
+			var newTech = await _context.Employees.Where(e => e.Id == Technician).FirstOrDefaultAsync();
+            await _notificationService.WorkOrderBulkReassign(workOrdersToReassign, newTech);
+            workOrdersToReassign.ForEach(w=> w.Technician = Technician);
+            await _context.SaveChangesAsync();
+            Message = "Work Order(s) reassigned";
+            return RedirectToAction(nameof(BulkReassign));
 		}
 
 
