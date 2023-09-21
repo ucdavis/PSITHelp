@@ -7,6 +7,8 @@
 
 		</div>
 	</div>
+	<form asp-action="ChangeTechOrRating">
+		<input type="hidden" asp-for="@Model.workOrder.Id" />
 	<div>
 		<h3>Update to:</h3>
 		<div class="form-group row">
@@ -39,10 +41,45 @@
 					<option>17</option>
 					<option>18</option>
 					<option>19</option>
-
 				</select>
 			</div>
 		</div>
+		<div class="form-group row">
+				<label asp-for="workOrder.TechComments" class="col-sm-3 col-form-label">Comments</label>
+				<div class="col-sm-9">
+					<input asp-for="workOrder.TechComments" class="form-control" />
+				</div>
+		</div>
+		<div>(Comments added to tech change email & work order)</div>
+		<div>
+			<input type="submit" class="btn btn-primary" value="Update" /> | 
+			<a asp-action="details" asp-controller="Staff" asp-route-id="@Model.workOrder.Id" class="btn btn-dark">Cancel</a>
+		</div>
 	</div>
+	</form>
 	<hr />
+	@if (Model.workOrder.Actions.Any())
+	{
+		<div>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Date</th>
+						<th>By</th>
+						<th>Text</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var action in Model.workOrder.Actions)
+					{
+						<tr>
+							<td>@action.Date.ToString()</td>
+							<td>@action.SubmittedEmployee.Name</td>
+							<td>@action.Text</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	}
 </div>

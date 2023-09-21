@@ -35,6 +35,29 @@ namespace ITHelp.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ChangeTechOrRating(int id, WorkOrderEditCreateViewModel vm)
+        {
+            var updatedWo = vm.workOrder;
+            var workOrderToUpdate = await _context.WorkOrders.Include(w=>w.Tech).Where(w => w.Id == id).FirstOrDefaultAsync();
+            if(workOrderToUpdate == null || workOrderToUpdate.Id != updatedWo.Id)
+            {
+                ErrorMessage = "Work Order not found";
+                return RedirectToAction(nameof(Index));
+            }
+			workOrderToUpdate.Difficulty = updatedWo.Difficulty;
+            workOrderToUpdate.TechComments = updatedWo.TechComments;
+			if (workOrderToUpdate.Technician != updatedWo.Technician)
+            {
+                var tech = await _context.Employees.Where(e => e.Id == updatedWo.Technician).FirstOrDefaultAsync();
+                await _notificationService.WorkOrderChangeTech(workOrderToUpdate, tech);
+				workOrderToUpdate.Technician = updatedWo.Technician;
+			}
+            await _context.SaveChangesAsync();
+            Message = "Updates saved";
+            return RedirectToAction("Details","Staff",new {workOrderToUpdate.Id});
+        }
+
 
 		public async Task<IActionResult> NewUserPermissions()
         {
