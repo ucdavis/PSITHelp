@@ -1,0 +1,47 @@
+﻿@model WorkOrderBulkReassignViewModel
+
+<form asp-action="BulkReassign">
+<div>
+	<div class="form-group row">
+		<label for="Technician" class="col-sm-2 col-form-label">New Technician</label>
+		<div class="col-sm-3">
+			<select id="Technician" name="Technician" class="form-select form-select-sm" asp-items="@(new SelectList(Model.technicians, "Id", "LastFirstName"))"></select>
+		</div>
+		<div class="col-sm-3">
+			<input type="submit" value="Reassign" />
+		</div>
+	</div>
+	<div>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th></th>
+					<th>Id</th>
+					<th>Title</th>
+					<th>Requested</th>
+					<th>Due</th>
+					<th>Requester</th>
+					<th>Technician</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var row in Model.workOrders)
+				{
+					<tr class="blah @((row.Status ==2 || row.Status == 3) ? "table-info" : (row.DueDate.HasValue && row.DueDate < DateTime.Now) ? "table-danger" : "")">
+						<td><input type="checkbox" class="bigCheckbox" id="reassign" name="reassign" value="@row.Id" /></td>
+						<td>@row.Id</td>
+						<td>@row.Title</td>
+						<td>@(row.RequestDate.HasValue ? row.RequestDate.Value.ToShortDateString() : "")</td>
+						<td>@(row.DueDate.HasValue ? row.DueDate.Value.ToShortDateString() : "")</td>
+						<td>@row.Requester?.Name</td>
+						<td>@row.Tech?.Name</td>
+						<td>@row.StatusTranslate?.StatusTranslated</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+</div>
+</form>
+

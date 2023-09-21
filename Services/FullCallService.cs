@@ -8,6 +8,7 @@ namespace ITHelp.Services
 	{
 		IQueryable<WorkOrders> FullWO();
 		IQueryable<WorkOrders> SummaryWO();
+		IQueryable<UserRequestPermissions> FullUserRequestPermission();
 	}
 
 	public class FullCallService : IFullCallService
@@ -21,7 +22,7 @@ namespace ITHelp.Services
 
 		public IQueryable<WorkOrders> FullWO()
 		{
-			var wo = _context.WorkOrders
+			return _context.WorkOrders
 				.Include(w => w.Requester)
 				.Include(w => w.Tech)
 				.Include(w => w.StatusTranslate)
@@ -31,18 +32,24 @@ namespace ITHelp.Services
 				.Include(w => w.Actions)
 				.ThenInclude(w => w.SubmittedEmployee)
 				.AsQueryable();
-			return wo;
 		}
 
 		public IQueryable<WorkOrders> SummaryWO()
 		{
-			var wo = _context.WorkOrders
+			return _context.WorkOrders
 				.Include(w => w.Requester)
 				.Include(w => w.Tech)
 				.Include(w => w.StatusTranslate)
 				.Include(w => w.Creator)
 				.AsQueryable();
-			return wo;
+		}
+
+		public IQueryable<UserRequestPermissions> FullUserRequestPermission()
+		{
+			return _context.UserRequestPermissions
+				.Include(p => p.PIEmployee)
+				.Include(p => p.DelegateEmployee)
+				.AsQueryable();
 		}
 	}
 }

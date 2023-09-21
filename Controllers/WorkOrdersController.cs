@@ -13,8 +13,8 @@ using System.Security.Claims;
 
 namespace ITHelp.Controllers
 {
-    
-    public class WorkOrdersController : SuperController
+	// TODO Implement rating system check out cdbootstrap https://www.devwares.com/docs/contrast/javascript/Installation/
+	public class WorkOrdersController : SuperController
     {
         private readonly ITHelpContext _context;
         private readonly IFileIOService _fileService;

@@ -27,7 +27,7 @@ namespace ITHelp.Models
         public virtual DbSet<ManualEmployees> ManEmployees { get; set; }
         public virtual DbSet<PIGroups> PIGroups { get; set; }   
         public virtual DbSet<Status> Status { get; set; }
-        public virtual DbSet<UserReequestPermissions> UserRequestPermissions { get; set; }
+        public virtual DbSet<UserRequestPermissions> UserRequestPermissions { get; set; }
         public virtual DbSet<UserRequest> UserRequests { get; set; }
         public virtual DbSet<MigratedGroups> MigratedGroups { get; set; }
         public virtual DbSet<EmployeePreferences> Preferences { get; set; }
@@ -80,6 +80,17 @@ namespace ITHelp.Models
                 entity.Property(e => e.StatusTranslated).HasColumnName("status_trans");
 
             });
+
+            modelBuilder.Entity<UserRequestPermissions>(entity =>
+            {
+                entity.ToTable("user_request_permissions");
+                entity.Property(e => e.Id).HasColumnName("delegate_id");
+				entity.Property(e => e.PIEmployeeId).HasColumnName("pi_employee_id");
+                entity.Property(e => e.DelegateId).HasColumnName("delegate_employee_id");
+                entity.Property(e => e.SDrive).HasColumnName("s_drive");
+                entity.Property(e => e.ADGroup).HasColumnName("ad_group");
+                entity.Property(e => e.BaseGroup).HasColumnName("base_ad_group");
+			});
 
 			modelBuilder.Entity<Buildings>(entity =>
 			{

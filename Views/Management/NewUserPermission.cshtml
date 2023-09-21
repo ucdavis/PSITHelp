@@ -1,0 +1,57 @@
+﻿@model UserRequestPermissionViewModel
+
+<h3>Create New User Request Permission</h3>
+<form asp-action="NewUserPermission">
+	<div>
+		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		<hr />
+		<div class="form-group row">
+			<label asp-for="permission.PIEmployeeId" class="col-sm-3 col-form-label">PI</label>
+			<div class="col-sm-4">
+				<select asp-for="permission.PIEmployeeId" class="form-select form-select-sm" asp-items="@(new SelectList(Model.employees, "Id", "LastFirstName"))"></select>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label asp-for="permission.DelegateId" class="col-sm-3 col-form-label">Delegate</label>
+			<div class="col-sm-5">
+				<select asp-for="permission.DelegateId" class="form-select form-select-sm" asp-items="@(new SelectList(Model.employees, "Id", "LastFirstName"))"></select>
+				(select same as PI name if this is not a delegate)
+			</div>
+		</div>
+		<div class="form-group row">
+			<label asp-for="permission.SDrive" class="col-sm-3 col-form-label"></label>
+			<div class="col-sm-2">
+				<input type="checkbox" class="form-check-input bigCheckbox" asp-for="permission.SDrive" />
+			</div>
+		</div>
+		<div class="form-group row">
+			<label asp-for="permission.ADGroup" class="col-sm-3 col-form-label"></label>
+			<div class="col-sm-3">
+				<input asp-for="permission.ADGroup" class="form-control" />
+				<span asp-validation-for="permission.ADGroup" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label asp-for="permission.BaseGroup" class="col-sm-3 col-form-label"></label>
+			<div class="col-sm-2">
+				<select asp-for="permission.BaseGroup" class="form-select form-select-sm">
+					<option value="Staff">Staff</option>
+					<option value="AdminStaff">AdminStaff</option>
+					<option value="Affiliates">Affiliates</option>
+					<option value="DomainNoAccess">DomainNoAccess</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<input type="submit" value="Create" class="btn btn-primary" /> |
+			<a asp-action="NewUserPermissions" class="btn btn-dark">Cancel</a>
+		</div>
+	</div>
+</form>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}
+
