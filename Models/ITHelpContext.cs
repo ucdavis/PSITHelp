@@ -73,7 +73,24 @@ namespace ITHelp.Models
                 entity.Property(e => e.Email).HasColumnName("ucd_mailid");
             });
 
-            modelBuilder.Entity<Status>(entity =>
+			modelBuilder.Entity<ManualEmployees>(entity =>
+			{
+				entity.ToTable("cats_manual_employees");
+
+				entity.HasKey(e => e.Id);
+				entity.Property(e => e.Id).HasColumnName("member_id");
+				entity.Property(e => e.FirstName).HasColumnName("first_name");
+				entity.Property(e => e.LastName).HasColumnName("last_name");
+				entity.Property(e => e.KerberosId).HasColumnName("kerberos_id");
+				entity.Property(e => e.Role).HasColumnName("cats_role");
+				entity.Property(e => e.Phone).HasColumnName("campus_phone");
+				entity.Property(e => e.Building).HasColumnName("bldg");
+				entity.Property(e => e.Room).HasColumnName("campus_room");
+				entity.Property(e => e.Email).HasColumnName("ucd_mailid");
+                entity.Property(e => e.Current).HasColumnName("cats_access");
+			});
+
+			modelBuilder.Entity<Status>(entity =>
             {
                 entity.ToTable("status_trans");
                 entity.Property(e => e.Id).HasColumnName("status");

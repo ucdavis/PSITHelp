@@ -24,7 +24,20 @@ namespace ITHelp.Controllers
             return View();
         }
 
-        public async Task<IActionResult> ChangeTechOrRating(int id)
+        public async Task<IActionResult> Membership()
+        {
+            var model = await _context.ManEmployees.ToListAsync();
+            return View(model);
+        }
+
+        public async Task<IActionResult> EditMember(string id)
+        {
+            var model = await _context.ManEmployees.Where(m => m.Id == id).FirstOrDefaultAsync();
+            return View(model);
+        }
+
+
+		public async Task<IActionResult> ChangeTechOrRating(int id)
         {
             var model = await WorkOrderEditCreateViewModel.EditManagement(_context, id);
             if(model.workOrder == null)

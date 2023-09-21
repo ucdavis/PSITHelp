@@ -1,0 +1,31 @@
+﻿@model List<ITHelp.Models.ManualEmployees>
+
+<div>
+	<div><a asp-action="NewMember" class="btn btn-primary">Create New Member</a></div>
+	<div><hr /></div>
+	<div>
+		<table class="table table-striped datatable">
+			<thead>
+				<tr>
+					<th></th>
+					<th>First Name</th>
+					<th>Last Name</th>
+					<th>Allow</th>
+					<th>Role</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach(var row in Model)
+				{
+					<tr>
+						<td><a asp-action="EditMember" asp-route-id="@row.Id" class="btn btn-primary">Edit</a></td>
+						<td>@row.FirstName</td>
+						<td>@row.LastName</td>
+						<td><input type="checkbox" checked="@row.Current" class="bigCheckbox" /></td>
+						<td>@row.Role</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+</div>
