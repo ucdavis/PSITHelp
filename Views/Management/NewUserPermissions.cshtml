@@ -25,14 +25,14 @@
 			{
 				<tr>
 					<td><a asp-action="EditUserPermission" asp-route-id="@row.Id" class="btn btn-primary">Edit</a></td>
-					<td>@row.PIEmployee.Name</td>
-					<td>@row.DelegateEmployee.Name</td>
+					<td>@row.PIEmployee?.Name</td>
+					<td>@row.DelegateEmployee?.Name</td>
 					<td data-sort="@row.Current"><input type="checkbox" class="bigCheckbox" checked="@row.Current" /> @row.Current</td>
 					<td data-sort="@row.SDrive"><input type="checkbox" class="bigCheckbox" checked="@row.SDrive" /></td>
 					<td>@row.ADGroup</td>
 					<td>@row.BaseGroup</td>
-					<td>@row.PIEmployee.LastFirstName</td>
-					<td>@row.DelegateEmployee.LastFirstName</td>
+					<td>@row.PIEmployee?.LastFirstName</td>
+					<td>@row.DelegateEmployee?.LastFirstName</td>
 				</tr>
 			}
 		</tbody>
