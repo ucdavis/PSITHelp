@@ -58,6 +58,22 @@ namespace ITHelp.Controllers
             return RedirectToAction("Details","Staff",new {workOrderToUpdate.Id});
         }
 
+        public async Task<IActionResult> BulkReassign()
+        {
+            var model = await WorkOrderBulkReassignViewModel.Create(_context, _fullCall);
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BulkReassign(int[] reassign, string Technician)
+        {
+            var workOrdersToReassign = await _context.WorkOrders.Where(w => reassign.Contains(w.Id)).ToListAsync();
+			workOrdersToReassign.ForEach(w=> w.Technician = Technician);
+
+            var model = await WorkOrderBulkReassignViewModel.Create(_context, _fullCall);
+			return View(model);
+		}
+
 
 		public async Task<IActionResult> NewUserPermissions()
         {
