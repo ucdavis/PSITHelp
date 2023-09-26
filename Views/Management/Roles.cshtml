@@ -1,0 +1,67 @@
+﻿@model ITHelp.Models.AssignmentsViewModel
+
+<div>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th></th>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Role</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach(var row in Model.employees)
+			{
+				<tr>
+					<td>Edit</td>
+					<td>@row.FirstName</td>
+					<td>@row.LastName</td>
+					<td>@row.Role</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+@await Html.PartialAsync("_Roles")
+<div>
+	<form asp-action="UpdateAssignemnt">
+	<table class="table">
+		<thead>
+			<tr>
+				<td>Assign Round Robin?</td>
+				<td>Reset Date</td>
+				<td>Next ticket goes to</td>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var row in Model.scheme)
+			{
+				<tr>
+					<td><input type="checkbox" asp-for="scheme.First().AssignRoundRobin" class="bigCheckbox" /></td>
+					<td><input type="text" asp-for="scheme.First().ResetDate" value="@row.ResetDate.ToShortDateString()" class="datepicker" /></td>
+					<td>@row.NextTech</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+	<div><input type="submit" value="Save changes" class="btn btn-primary" /></div>
+	</form>
+</div>
+<div>
+	If Round Robin checked: tickets will be assigned to each tech in order of previous tickets. Otherwise, tickets will go to the tech with the lowest ticket weight. Note "Start New work order" from the staff menu always assigns to the person submitting that form.
+	Ticket weight and count is based on tickets submitted on or after the reset date. Any ticket submitted before that is ignored for the weighted ticket assignment scheme.
+</div>
+
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+	<script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.12.1/jquery-ui.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$('.datepicker').datepicker();
+		});
+	</script>
+} 

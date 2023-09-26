@@ -23,6 +23,7 @@ namespace ITHelp.Models
         public virtual DbSet<Actions> Actions { get; set; }
         public virtual DbSet<ActiveStatus> ActiveStatus { get; set; }
         public virtual DbSet<AssignScheme> AssignSchemes { get; set; }
+        public virtual DbSet<AssignmentSchemeTable> AssignmentSchemes { get; set; }
         public virtual DbSet<Files> Files { get; set; }
         public virtual DbSet<ManualEmployees> ManEmployees { get; set; }
         public virtual DbSet<PIGroups> PIGroups { get; set; }   
@@ -158,6 +159,13 @@ namespace ITHelp.Models
                 entity.Property(e => e.AssignRoundRobin).HasColumnName("assign_round_robin");
                 entity.Property(e => e.ResetDate).HasColumnName("reset_date");
                 entity.Property(e => e.NextTech).HasColumnName("next_tech");
+            });
+
+            modelBuilder.Entity<AssignmentSchemeTable>(entity =>
+            {
+                entity.ToTable("assign_scheme");
+                entity.Property(e => e.AssignRoundRobin).HasColumnName("assign_round_robin");
+                entity.Property(e => e.ResetDate).HasColumnName("reset_date");
             });
 
             modelBuilder.Entity<AssignmentStats>(entity =>

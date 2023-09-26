@@ -24,6 +24,31 @@ namespace ITHelp.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Roles()
+        {
+            var model = await AssignmentsViewModel.CreateRoles(_context);
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateAssignemnt (AssignmentSchemeTable scheme)
+        {
+                  
+            var schemeToUpdate = await _context.AssignmentSchemes.FirstOrDefaultAsync();
+            schemeToUpdate.AssignRoundRobin = scheme.AssignRoundRobin;
+            schemeToUpdate.ResetDate = scheme.ResetDate;
+            if (ModelState.IsValid)
+            {
+                await _context.SaveChangesAsync();
+                Message = "Assignment scheme updated";               
+            }
+            else
+            {
+                ErrorMessage = "Something went wrong";
+            }            
+            return RedirectToAction(nameof(Roles));
+        }
+
         public async Task<IActionResult> Membership()
         {
             var model = await _context.ManEmployees.ToListAsync();
