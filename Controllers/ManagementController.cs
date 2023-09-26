@@ -2,6 +2,7 @@
 using ITHelp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace ITHelp.Controllers
@@ -28,6 +29,27 @@ namespace ITHelp.Controllers
         {
             var model = await AssignmentsViewModel.CreateRoles(_context);
             return View(model);
+        }
+
+        public async Task<IActionResult> EditRole(string id)
+        {
+            var model = await _context.Employees.Where(e => e.Id == id).FirstOrDefaultAsync();
+            if(model == null)
+            {
+                ErrorMessage = "Employee not found";
+                return RedirectToAction(nameof(Roles));
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult EditRole(string id, Employee updatedEmployee)
+        {
+            var p0 = new SqlParameter("@employee_id", updatedEmployee.Id);
+            var p1 = new SqlParameter("@cats_role", updatedEmployee.Role);
+            _context.Database.ExecuteSqlRaw($"EXEC mvc_update_employee_role @employee_id, @cats_role", p0, p1);
+            Message = "Role updated";
+            return RedirectToAction(nameof(Roles));
         }
 
         [HttpPost]

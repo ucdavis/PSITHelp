@@ -14,7 +14,7 @@
 			@foreach(var row in Model.employees)
 			{
 				<tr>
-					<td>Edit</td>
+					<td><a asp-action="EditRole" asp-route-id="@row.Id" class="btn btn-info">Edit</a></td>
 					<td>@row.FirstName</td>
 					<td>@row.LastName</td>
 					<td>@row.Role</td>
