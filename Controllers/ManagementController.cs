@@ -2,6 +2,7 @@
 using ITHelp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace ITHelp.Controllers
@@ -24,7 +25,128 @@ namespace ITHelp.Controllers
             return View();
         }
 
-        public async Task<IActionResult> ChangeTechOrRating(int id)
+        public async Task<IActionResult> Roles()
+        {
+            var model = await AssignmentsViewModel.CreateRoles(_context);
+            return View(model);
+        }
+
+        public async Task<IActionResult> EditRole(string id)
+        {
+            var model = await _context.Employees.Where(e => e.Id == id).FirstOrDefaultAsync();
+            if(model == null)
+            {
+                ErrorMessage = "Employee not found";
+                return RedirectToAction(nameof(Roles));
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult EditRole(string id, Employee updatedEmployee)
+        {
+            var p0 = new SqlParameter("@employee_id", updatedEmployee.Id);
+            var p1 = new SqlParameter("@cats_role", updatedEmployee.Role);
+            _context.Database.ExecuteSqlRaw($"EXEC mvc_update_employee_role @employee_id, @cats_role", p0, p1);
+            Message = "Role updated";
+            return RedirectToAction(nameof(Roles));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateAssignemnt (AssignmentSchemeTable scheme)
+        {
+                  
+            var schemeToUpdate = await _context.AssignmentSchemes.FirstOrDefaultAsync();
+            schemeToUpdate.AssignRoundRobin = scheme.AssignRoundRobin;
+            schemeToUpdate.ResetDate = scheme.ResetDate;
+            if (ModelState.IsValid)
+            {
+                await _context.SaveChangesAsync();
+                Message = "Assignment scheme updated";               
+            }
+            else
+            {
+                ErrorMessage = "Something went wrong";
+            }            
+            return RedirectToAction(nameof(Roles));
+        }
+
+        public async Task<IActionResult> Membership()
+        {
+            var model = await _context.ManEmployees.ToListAsync();
+            return View(model);
+        }
+
+        public ActionResult NewMember()
+        {
+            var model = new ManualEmployees();
+            return View(model);
+        }
+
+		[HttpPost]
+		public async Task<IActionResult> NewMember(ManualEmployees manualEmployee)
+		{
+            var manualEmployeeToCreate = new ManualEmployees();
+            manualEmployeeToCreate.Id=manualEmployee.Id;
+            manualEmployeeToCreate.FirstName = manualEmployee.FirstName;
+            manualEmployeeToCreate.LastName = manualEmployee.LastName;
+            manualEmployeeToCreate.Phone = manualEmployee.Phone;
+            manualEmployeeToCreate.Email = manualEmployee.Email;
+            manualEmployeeToCreate.KerberosId = manualEmployee.KerberosId;
+            manualEmployeeToCreate.Role = manualEmployee.Role;
+            manualEmployeeToCreate.Current = true;
+
+			if (ModelState.IsValid)
+			{
+                _context.Add(manualEmployeeToCreate);
+				await _context.SaveChangesAsync();
+				Message = "Manual entry created";
+				return RedirectToAction(nameof(Membership));
+			}
+			ErrorMessage = "Something went wrong.";
+			return View();
+		}
+
+		public async Task<IActionResult> EditMember(string id)
+        {
+            var model = await _context.ManEmployees.Where(m => m.Id == id).FirstOrDefaultAsync();
+            if (model == null)
+            {
+                ErrorMessage = "Manual entry not found";
+                return RedirectToAction(nameof(Membership));
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditMember (string id, ManualEmployees editedManualEmployee)
+        {
+            var manualEmployeeToUpdated = await _context.ManEmployees.Where(m => m.Id == id).FirstOrDefaultAsync();
+			if (manualEmployeeToUpdated == null || manualEmployeeToUpdated.Id != editedManualEmployee.Id)
+			{
+				ErrorMessage = "Manual entry not found";
+				return RedirectToAction(nameof(Membership));
+			}
+            manualEmployeeToUpdated.FirstName = editedManualEmployee.FirstName;
+            manualEmployeeToUpdated.LastName   = editedManualEmployee.LastName;
+            manualEmployeeToUpdated.Phone = editedManualEmployee.Phone;
+            manualEmployeeToUpdated.KerberosId = editedManualEmployee.KerberosId;
+            manualEmployeeToUpdated.Email = editedManualEmployee.Email;
+            manualEmployeeToUpdated.Current = editedManualEmployee.Current;
+            manualEmployeeToUpdated.Role = editedManualEmployee.Role;
+
+            if(ModelState.IsValid)
+            {
+                await _context.SaveChangesAsync();
+                Message = "Manual entry updated";
+                return RedirectToAction(nameof(Membership));
+            }
+            ErrorMessage = "Something went wrong.";
+            return View(editedManualEmployee);
+		}
+
+
+		public async Task<IActionResult> ChangeTechOrRating(int id)
         {
             var model = await WorkOrderEditCreateViewModel.EditManagement(_context, id);
             if(model.workOrder == null)

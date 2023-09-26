@@ -8,6 +8,7 @@ namespace ITHelp.Models
 
         public List<AssignmentStats>     ticketCounts { get; set; }
         public List<AssignScheme> scheme { get; set; }
+        public List<Employee> employees { get; set; }
 
         public static async Task<AssignmentsViewModel> Create(ITHelpContext _context)
         {
@@ -19,7 +20,19 @@ namespace ITHelp.Models
             };
             
             return model;
-        }        
-    }
+        }
+		public static async Task<AssignmentsViewModel> CreateRoles(ITHelpContext _context)
+		{
+
+			var model = new AssignmentsViewModel
+			{
+				employees = await _context.Employees.Where(e => e.Role != "none").ToListAsync(),
+				scheme = await _context.AssignSchemes.FromSqlRaw($"EXEC mvc_assignment_scheme_search").ToListAsync()
+			};
+
+			return model;
+		}
+
+	}
 }
 
