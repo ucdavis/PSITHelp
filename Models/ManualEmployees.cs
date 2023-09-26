@@ -9,8 +9,8 @@
 		public string KerberosId { get; set; }
 		public string Role { get; set; }
 		public string Phone { get; set; }
-		public int Building { get; set; }
-		public string Room { get; set; }
+		
+	
 		public string Email { get; set; }
 		public bool Current { get; set; }
 
