@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using ITHelp.Services;
 using System.Security.Claims;
+using Microsoft.Data.SqlClient;
 
 namespace ITHelp.Controllers
 {
@@ -140,6 +141,26 @@ namespace ITHelp.Controllers
             ErrorMessage = "Something went wrong";
 			return RedirectToAction(nameof(Details), new { woToComment.Id });
 		}
+
+        public async Task<IActionResult> NewUser()
+        {
+			var p0 = new SqlParameter("@employee_id", GetUserId());
+
+            var p1 = new SqlParameter()
+            {
+                ParameterName = "@count",
+                Value = 0,
+                SqlDbType = SqlDbType.Int,
+                Direction = ParameterDirection.InputOutput,
+            };
+			_context.Database.ExecuteSqlRaw($"EXEC mvc_check_user_request_permission @employee_id, @count OUTPUT", p0, p1);
+            if(Convert.ToInt32(p1.Value) == 0)
+            {
+                ErrorMessage = "You don't have permission to request new users. Please contact the IT Office to update if you feel this is a mistake";
+                return RedirectToAction(nameof(Index));
+            }
+			return View();
+        }
 
 		// GET: WorkOrders/Create
 		public async Task<IActionResult> Create()
