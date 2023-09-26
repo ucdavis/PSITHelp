@@ -1,14 +1,10 @@
-﻿@model WorkOrderBulkReassignViewModel
+﻿@model List<ITHelp.Models.WorkOrders>
 
-<form asp-action="BulkReassign">
+<form asp-action="BulkDelete">
 <div>
-	<div class="form-group row">
-		<label for="Technician" class="col-sm-2 col-form-label">New Technician</label>
+	<div class="form-group row">		
 		<div class="col-sm-3">
-			<select id="Technician" name="Technician" class="form-select form-select-sm" asp-items="@(new SelectList(Model.technicians, "Id", "LastFirstName"))"></select>
-		</div>
-		<div class="col-sm-3">
-			<input type="submit" class="btn btn-primary" value="Reassign" />
+			<input type="submit" value="Delete" class="btn btn-primary" onclick="return confirm('Are you sure you want to delete these? There is no recovery from deletion');" />
 		</div>
 	</div>
 	<div>
@@ -26,10 +22,10 @@
 				</tr>
 			</thead>
 			<tbody>
-				@foreach (var row in Model.workOrders)
+				@foreach (var row in Model)
 				{
 					<tr class="blah @((row.Status ==2 || row.Status == 3) ? "table-info" : (row.DueDate.HasValue && row.DueDate < DateTime.Now) ? "table-danger" : "")">
-						<td><input type="checkbox" class="bigCheckbox" id="reassign" name="reassign" value="@row.Id" /></td>
+						<td><input type="checkbox" class="bigCheckbox" id="delete" name="delete" value="@row.Id" /></td>
 						<td>@row.Id</td>
 						<td>@row.Title</td>
 						<td>@(row.RequestDate.HasValue ? row.RequestDate.Value.ToShortDateString() : "")</td>

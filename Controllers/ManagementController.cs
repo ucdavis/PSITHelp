@@ -198,8 +198,43 @@ namespace ITHelp.Controllers
             return RedirectToAction(nameof(BulkReassign));
 		}
 
+        public async Task<IActionResult> BulkDelete()
+        {
+            var model = await _fullCall.SummaryWO().Where(w => w.Status != 4).ToListAsync();
+            return View(model);
+        }
 
-		public async Task<IActionResult> NewUserPermissions()
+        [HttpPost]
+        public async Task<IActionResult> BulkDelete(int[] delete)
+        {
+            if(!delete.Any())
+            {
+                ErrorMessage = "No Work Order(s) selected";
+				return RedirectToAction(nameof(BulkDelete));
+			}
+            var workOrdersToDelete = await _context.WorkOrders.Where(w => delete.Contains(w.Id)).ToListAsync();
+            var actionsToDelete = await _context.Actions.Where(a => delete.Contains(a.WOId)).ToListAsync();
+            var fileToDelete = await _context.Files.Where(f => delete.Contains(f.WOId)).ToListAsync();
+
+            foreach (var file in fileToDelete)
+            {
+                _context.Remove(file);
+            }
+            foreach(var action in actionsToDelete)
+            {
+                _context.Remove(action);
+            }
+            foreach(var wo in workOrdersToDelete)
+            {
+                _context.Remove(wo);
+            }
+            await _context.SaveChangesAsync();
+            Message = $"Work Order(s) deleted: {string.Join(" , ", delete)}";
+            return RedirectToAction(nameof(BulkDelete));
+        }
+
+
+        public async Task<IActionResult> NewUserPermissions()
         {
             var model = await _fullCall.FullUserRequestPermission()
                 .OrderBy(p => p.Current)
