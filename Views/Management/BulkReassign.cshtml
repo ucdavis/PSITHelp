@@ -8,7 +8,7 @@
 			<select id="Technician" name="Technician" class="form-select form-select-sm" asp-items="@(new SelectList(Model.technicians, "Id", "LastFirstName"))"></select>
 		</div>
 		<div class="col-sm-3">
-			<input type="submit" value="Reassign" />
+			<input type="submit" class="btn btn-primary" value="Reassign" />
 		</div>
 	</div>
 	<div>
