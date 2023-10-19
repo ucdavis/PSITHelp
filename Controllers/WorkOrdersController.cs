@@ -144,7 +144,8 @@ namespace ITHelp.Controllers
 
         public async Task<IActionResult> NewUser()
         {
-			var p0 = new SqlParameter("@employee_id", GetUserId());
+            var userId = GetUserId();
+			var p0 = new SqlParameter("@employee_id", userId);
 
             var p1 = new SqlParameter()
             {
@@ -159,7 +160,8 @@ namespace ITHelp.Controllers
                 ErrorMessage = "You don't have permission to request new users. Please contact the IT Office to update if you feel this is a mistake";
                 return RedirectToAction(nameof(Index));
             }
-			return View();
+            var model = await NewUserRequestViewModel.Create(_context, userId);
+			return View(model);
         }
 
 		// GET: WorkOrders/Create
