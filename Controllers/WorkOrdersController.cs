@@ -34,7 +34,7 @@ namespace ITHelp.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = GetUserId();
-            var model = await _fullCall.SummaryWO().Where(w => w.SubmittedBy == userId).OrderByDescending(w => w.RequestDate).ToListAsync();
+            var model = await _fullCall.SummaryWO().Where(w => w.SubmittedBy == userId).ToListAsync();
             return View(model);
         }
 
