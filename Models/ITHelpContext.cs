@@ -35,6 +35,7 @@ namespace ITHelp.Models
         public virtual DbSet<Notifications> Notifications { get; set; }
         public virtual DbSet<AssignmentStats> AssignmentStats { get; set; }
         public virtual DbSet<UserReequestPermissionsSummary> UserReequestPermissionsSummary { get; set; }
+        public virtual DbSet<NewUserRequest> NewUserRequests { get; set; }
 
 
 
@@ -87,6 +88,26 @@ namespace ITHelp.Models
 				entity.Property(e => e.Phone).HasColumnName("campus_phone");
 				entity.Property(e => e.Email).HasColumnName("ucd_mailid");
                 entity.Property(e => e.Current).HasColumnName("cats_access");
+			});
+
+            modelBuilder.Entity<NewUserRequest>(entity =>
+            {
+                entity.ToTable("user_request");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).HasColumnName("req_id");
+                entity.Property(e => e.SubmittedBy).HasColumnName("submitted_by");
+				entity.Property(e => e.FirstName).HasColumnName("first_name");
+				entity.Property(e => e.LastName).HasColumnName("last_name");
+				entity.Property(e => e.Email).HasColumnName("ucd_mailid");
+				entity.Property(e => e.Undergraduate).HasColumnName("under_grad");
+				entity.Property(e => e.SDrive).HasColumnName("s_drive_access");
+				entity.Property(e => e.AdGroup).HasColumnName("ad_group");
+				entity.Property(e => e.BaseAdGroup).HasColumnName("base_ad_group");
+				entity.Property(e => e.Complete).HasColumnName("complete");
+				entity.Property(e => e.DateSubmitted).HasColumnName("date_submitted");
+				entity.Property(e => e.CancelNotes).HasColumnName("cancel_notes");
+				entity.Property(e => e.Comments).HasColumnName("comments");
+
 			});
 
 			modelBuilder.Entity<Status>(entity =>

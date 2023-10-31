@@ -1,0 +1,90 @@
+﻿@model ITHelp.Models.NewUserRequestViewModel
+
+
+<form asp-action="NewUser">
+	<div>
+		<h3>New User Request</h3>
+		<div class="form-group row">
+			<label asp-for="request.FirstName" class="col-sm-3 col-form-label"></label>
+			<div class="col-sm-3">
+				<input asp-for="request.FirstName" class="form-control" />
+			</div>
+		</div>
+		<div class="form-group row">
+			<label asp-for="request.LastName" class="col-sm-3 col-form-label"></label>
+			<div class="col-sm-3">
+				<input asp-for="request.LastName" class="form-control" />
+			</div>
+		</div>
+		<div class="form-group row">
+			<label asp-for="request.Email" class="col-sm-3 col-form-label"></label>
+			<div class="col-sm-4">
+				<div class="input-group">
+				<input asp-for="request.Email" class="form-control col-sm-2" />
+				<span class="input-group-text" id="basic-addon2">@@ucdavis.edu</span>
+				</div>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label asp-for="request.Undergraduate" class="col-sm-3 col-form-label"></label>
+			<div class="col-sm-1">
+				<span class="form-control-plaintext"><input type="checkbox" asp-for="request.Undergraduate" class="bigCheckbox form-check-input"></span>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label asp-for="request.AdGroup" class="col-sm-3 col-form-label"></label>
+			<div class="col-sm-6">
+				<select asp-for="request.AdGroup" asp-items="@(new SelectList(Model.groups, "Value", "Text"))">
+					<option value="0">Select group...</option>
+				</select>
+			</div>			
+		</div>
+		<div id="sDriveDiv" class="collapse">
+			<div  class="form-group row">
+				<label asp-for="request.SDrive" class="col-sm-3 col-form-label"></label>
+				<div class="col-sm-6">
+					<select asp-for="request.SDrive">
+						<option value="NoValue">Select access</option>
+						<option value="True">Needs S Drive access</option>
+						<option value="False">Does NOT need S Drive access</option>
+					</select>
+				</div>
+			</div>
+		</div>	
+		<div class="form-group row">
+			Please use the Comments/Notes section to make any additional requests for user access.  Examples would be access to the SAS server, Terminal Server, RDP to a lab computer, access to special folders or your web site folders.
+		</div>
+		<div class="form-group row">
+			<label asp-for="request.Comments" class="col-sm-1 col-form-label"></label>
+			<div class="col-sm-9">
+				<textarea class="form-control" rows="3" asp-for="request.Comments"></textarea>
+			</div>
+		</div>
+		<div>
+			<input type="submit" class="btn btn-primary" value="Creaet New User Request" /> |
+			<a asp-action="index class="btn btn-dark">Cancel</a>
+		</div>
+	</div>
+</form>
+
+@section Scripts {
+	@{
+		<script type="text/javascript">
+		$(document).ready(function () {
+			$("#request_AdGroup").change(function () {
+				var selectedVal = $("#request_AdGroup").val();
+				if(selectedVal == "0" || selectedVal.endsWith("--False"))
+				{					
+					$("#request_SDrive").val("False");					
+					$("#sDriveDiv").hide();
+				} else
+				{
+					$("#sDriveDiv").show();
+				}
+			});
+		});
+		</script>
+	}
+}
+
+
