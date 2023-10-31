@@ -34,7 +34,7 @@ namespace ITHelp.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = GetUserId();
-            var model = await _fullCall.SummaryWO().Where(w => w.SubmittedBy == userId).ToListAsync();
+            var model = await _fullCall.SummaryWO().Where(w => w.SubmittedBy == userId).OrderByDescending(w => w.RequestDate).ToListAsync();
             return View(model);
         }
 
@@ -163,6 +163,56 @@ namespace ITHelp.Controllers
             var model = await NewUserRequestViewModel.Create(_context, userId);
 			return View(model);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> NewUser(NewUserRequestViewModel vm)
+        {
+            var userId = GetUserId();
+            var userName = GetUserName();
+            var newRequest = vm.request;
+            var groupBaseSDrive = newRequest.AdGroup.Split("--");
+            var group = groupBaseSDrive[0];
+            var baseGroup = groupBaseSDrive[1];
+            var requestToCreate = new NewUserRequest();
+			var tech = await GetNextTechnician();
+			requestToCreate.SubmittedBy = userId;
+            requestToCreate.FirstName = newRequest.FirstName;
+            requestToCreate.LastName = newRequest.LastName;
+            requestToCreate.Email = newRequest.Email;
+            requestToCreate.Undergraduate = newRequest.Undergraduate;
+            requestToCreate.AdGroup = group;
+            requestToCreate.BaseAdGroup = baseGroup;
+            requestToCreate.SDrive = newRequest.SDrive;
+            requestToCreate.Comments = newRequest.Comments;
+            requestToCreate.Complete = false;
+            requestToCreate.DateSubmitted = DateTime.Now;
+
+			var woToCreate = new WorkOrders();	
+			woToCreate.Title = $"New user request for {newRequest.FirstName} {newRequest.LastName}";
+			woToCreate.SubmittedBy = userId;
+			woToCreate.CreatedBy = userId;
+			woToCreate.Technician = tech.First().Id;
+			woToCreate.Tech = tech.First();
+            woToCreate.FullText = $"{userName} has requested a new user be added to PS";
+            woToCreate.Contact = await _context.Preferences.Where(p => p.Id == userId).Select(p => p.ContactInfo).FirstOrDefaultAsync();			
+			woToCreate.ComputerTag = "N/A";
+
+			if (ModelState.IsValid)
+			{
+				_context.Add(woToCreate);
+				_context.Add(requestToCreate);
+				await _context.SaveChangesAsync();
+				await _notificationService.WorkOrderCreated(woToCreate, tech.First().UCDEmail);
+				await _context.SaveChangesAsync();
+				
+                Message = "New user requested";
+				
+				return RedirectToAction(nameof(Index));
+			}			
+
+			var model = await NewUserRequestViewModel.Create(_context, userId);
+			return View(model);
+		}
 
 		// GET: WorkOrders/Create
 		public async Task<IActionResult> Create()

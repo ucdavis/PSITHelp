@@ -31,8 +31,28 @@
 				<span class="form-control-plaintext"><input type="checkbox" asp-for="request.Undergraduate" class="bigCheckbox form-check-input"></span>
 			</div>
 		</div>
-		<div>
-			S drive question based on above choice
+		<div class="form-group row">
+			<label asp-for="request.AdGroup" class="col-sm-3 col-form-label"></label>
+			<div class="col-sm-6">
+				<select asp-for="request.AdGroup" asp-items="@(new SelectList(Model.groups, "Value", "Text"))">
+					<option value="0">Select group...</option>
+				</select>
+			</div>			
+		</div>
+		<div id="sDriveDiv" class="collapse">
+			<div  class="form-group row">
+				<label asp-for="request.SDrive" class="col-sm-3 col-form-label"></label>
+				<div class="col-sm-6">
+					<select asp-for="request.SDrive">
+						<option value="NoValue">Select access</option>
+						<option value="True">Needs S Drive access</option>
+						<option value="False">Does NOT need S Drive access</option>
+					</select>
+				</div>
+			</div>
+		</div>	
+		<div class="form-group row">
+			Please use the Comments/Notes section to make any additional requests for user access.  Examples would be access to the SAS server, Terminal Server, RDP to a lab computer, access to special folders or your web site folders.
 		</div>
 		<div class="form-group row">
 			<label asp-for="request.Comments" class="col-sm-1 col-form-label"></label>
@@ -47,7 +67,24 @@
 	</div>
 </form>
 
+@section Scripts {
+	@{
+		<script type="text/javascript">
+		$(document).ready(function () {
+			$("#request_AdGroup").change(function () {
+				var selectedVal = $("#request_AdGroup").val();
+				if(selectedVal == "0" || selectedVal.endsWith("--False"))
+				{					
+					$("#request_SDrive").val("False");					
+					$("#sDriveDiv").hide();
+				} else
+				{
+					$("#sDriveDiv").show();
+				}
+			});
+		});
+		</script>
+	}
+}
 
-<select asp-for="request.AdGroup" asp-items="@(new SelectList(Model.groups, "Value", "Text"))">
-	<option>Select group...</option>
-</select>
+
