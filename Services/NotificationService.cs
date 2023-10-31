@@ -6,7 +6,8 @@ namespace ITHelp.Services
     public interface INotificationService
     {
         Task WorkOrderCreated(WorkOrders wo, string techEmail);
-        Task WorkOrderCommentByClient(WorkOrders wo);
+		Task NewUserRequestCreated(WorkOrders wo, string techEmail);
+		Task WorkOrderCommentByClient(WorkOrders wo);
         Task WorkOrderCommentByTech(WorkOrders wo, Actions action);
         Task WorkOrderClosedByTech(WorkOrders wo, Actions action);
         Task WorkOrderMerged(WorkOrders parentWo, WorkOrders childWo, string techName);
@@ -34,6 +35,17 @@ namespace ITHelp.Services
             };
             _context.Add(notice);
         }
+
+		public async Task NewUserRequestCreated(WorkOrders wo, string techEmail)
+		{
+			var notice = new Notifications
+			{
+				WoId = wo.Id,
+				Email = techEmail,
+				Message = "New User Request Created"
+			};
+			_context.Add(notice);
+		}
 
 		public async Task WorkOrderCommentByClient(WorkOrders wo)
 		{
