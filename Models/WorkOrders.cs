@@ -51,6 +51,23 @@ namespace ITHelp.Models
         [ForeignKey("Building")]
         public Buildings BuildingName { get; set; }
 
+        [Display(Name = "Requested By")]
+        public string RequestorValue
+        {
+            get
+            {
+                if (Requester != null)
+                {
+                    return Requester.Name;
+                }
+                else
+                {
+                    return "Unknown";
+                }
+
+            }
+        }
+
         [Display(Name ="Created By")]
         public string CreatorValue
         {
