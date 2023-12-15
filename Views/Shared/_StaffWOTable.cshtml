@@ -1,18 +1,17 @@
 ﻿@model List<ITHelp.Models.WorkOrders>
 
-<table class="table datatable table-striped">
+<table class="table datatable table-striped" style="width: 100%">
     <thead>
         <tr>
             <th></th>
             <th>Title</th>
             <th>Full Text</th>
-            <th>Requested</th>
-            <th>Due</th>
-            <th>Requester</th>
+            <th>Date</th>            
+            <th>Requestor</th>
             <th>Tech</th>
             <th>Status</th>
-            <th>Diff</th>
-            <th>Review?</th>
+            <th>Dif</th>
+            <th>Rev?</th>
         </tr>
     </thead>
     <tbody>
@@ -26,14 +25,6 @@
                 @if(item.RequestDate.HasValue)
                 {
                     <td data-sort="@item.RequestDate.Value.ToFileTimeUtc()">@item.RequestDate.Value.ToShortDateString()</td>
-                } else
-                {
-                    <td></td>
-                }
-                
-                @if(item.DueDate.HasValue)
-                {
-                    <td data-sort="@item.DueDate.Value.ToFileTimeUtc()">@item.DueDate.Value.ToShortDateString()</td>
                 } else
                 {
                     <td></td>

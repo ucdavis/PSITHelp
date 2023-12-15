@@ -1,6 +1,6 @@
 ﻿@model List<ITHelp.Models.WorkOrders>
 
-<h1>My Open Work Orders</h1>
+<h1>Open Work Orders</h1>
 
 @await Html.PartialAsync("_StaffWOTable", @Model)
 
@@ -15,11 +15,17 @@
             $('.datatable').DataTable({
                 dom: 'lfrtip',
                 pageLength: 100,
-                columnDefs: [{
-                    targets: 2,
-                    searchable: true,
-                    visible: false
-                }],
+                columnDefs: [
+                    {
+                        targets: [1],
+                        width: "45%",
+                    },
+                    {
+                        targets: [2],
+                        searchable: true,
+                        visible: false
+                    },
+                ],                
                 order: [[3, 'desc']]
             });
         });
