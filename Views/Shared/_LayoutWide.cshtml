@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ITHelp</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ITHelp.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="//ajax.aspnetcdn.com/ajax/jquery.ui/1.12.1/themes/cupertino/jquery-ui.css">
+</head>
+<body>
+    <header>
+        <div class="navbar " style="background-image: linear-gradient(white, #cce6ff)">
+            <div class="col-sm-12 col-md-7"><img src="~/images/pslogo.png" /></div>
+            <div class="col-sm-12 col-md-5 text-success">IT Helpline: (530) 754-7510<br />
+                Email: <a href="mailto:ithelp@plantsciences.ucdavis.edu">ithelp@plantsciences.ucdavis.edu</a>
+            </div>
+        </div>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            
+                       
+            <div class="container-fluid">  
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">IT Help</a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="https://plsdeptresources.ucdavis.edu/computer-supportinformation-technology-it-services">IT Home</a>
+                        </li>                        
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-controller="WorkOrders" asp-action="Create">New Ticket</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-controller="WorkOrders" asp-action="Index">My WO</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-controller="WorkOrders" asp-action="NewUser">New User</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" asp-controller="Staff" asp-action="Index" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Staff Home
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                                <li><a class="nav-link text-light" asp-action="Create" asp-controller="Staff">New WO</a></li>
+                                <li><a class="nav-link text-light" asp-action="MyOpen" asp-controller="Staff">My Open WO</a></li>
+                                <li><a class="nav-link text-light" asp-action="AllOpen" asp-controller="Staff">All Open WO</a></li>
+                                <li><a class="nav-link text-light" asp-action="Search" asp-controller="Staff">Search WO</a></li>
+                                <hr />
+                                <li><a class="nav-link text-light" asp-action="Assignments" asp-controller="Staff">Ticket Assignment</a></li>
+                                @*<li><a class="nav-link text-light" asp-action="MigratedGroups" asp-controller="Staff">Migrated Groups</a></li>*@
+                                <li><a class="nav-link text-light" asp-action="UserPermissions" asp-controller="Staff">New User Permissions</a></li>
+                            </ul>
+                        </li>                       
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-light dropdown-toggle" asp-controller="Management" asp-action="Index" id="navbarDarkDropdownMenuLinkManagement" role="button" data-bs-toggle="dropdown" aria-expanded="false">Management Home</a>
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                                <li><a class="nav-link text-light" asp-action="NewUserPermissions" asp-controller="Management">New User Permissions</a></li>
+                                <li><a class="nav-link text-light" asp-action="BulkReassign" asp-controller="Management">Bulk Reassign</a></li>
+                                <li><a class="nav-link text-light" asp-action="Membership" asp-controller="Management">Custom Membership</a></li>
+                                <hr />
+                                <li><a class="nav-link text-light" asp-action="Roles" asp-controller="Management">Adjust Roles/Assignment Scheme</a></li>
+                                <li><a class="nav-link text-light" asp-action="BulkDelete" asp-controller="Management">Delete Work Orders</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container-fluid">
+        @if (!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string))
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fa-solid fa-triangle-exclamation"></i> @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (!string.IsNullOrWhiteSpace(TempData["Message"] as string))
+        {
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <i class="fa-solid fa-circle-info"></i> @TempData["Message"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2023 - ITHelp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    
+</body>
+</html>

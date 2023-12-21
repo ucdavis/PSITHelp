@@ -1,5 +1,7 @@
 ﻿@model List<ITHelp.Models.WorkOrders>
-
+@{
+    Layout = "_LayoutWide";
+}
 <h1>Open Work Orders</h1>
 
 @await Html.PartialAsync("_StaffWOTable", @Model)
