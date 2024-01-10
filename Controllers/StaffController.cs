@@ -252,7 +252,16 @@ namespace ITHelp.Controllers
                 ErrorMessage = "Work Order not found";
                 return RedirectToAction(nameof(Index));
             }
+            var DecreaseComment = new Actions
+            {
+                WOId = woToUpdate.Id,
+                Date = DateTime.Now,
+                Text = $"Difficulty/weight lowered: From: {woToUpdate.Difficulty}",
+                SubmittedBy = GetTechId(),
+            };
             woToUpdate.Difficulty = woToUpdate.Difficulty - 1;
+
+            _context.Add(DecreaseComment);
             await _context.SaveChangesAsync();
             Message = "Difficulty decreased";
             return RedirectToAction(nameof(Details), new { woToUpdate.Id });
