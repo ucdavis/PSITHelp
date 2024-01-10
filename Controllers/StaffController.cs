@@ -324,6 +324,12 @@ namespace ITHelp.Controllers
                 ErrorMessage = "Comment cannot be blank";
                 return RedirectToAction(nameof(Details), new {id});
             }
+            if(comment.Length > 8000)
+            {
+                ErrorMessage = $"Comment is too long. Please reduce number of characters; Comment length {comment.Length}; Attempted comment: {comment}";
+				var workOrders = await _fullCall.FullWO().FirstOrDefaultAsync(m => m.Id == id);				
+				return View("Details", workOrders);
+			}
             var woToComment = await _context.WorkOrders.Include(w => w.Requester).Where(w => w.Id == id).FirstOrDefaultAsync();
 			if (woToComment == null)
 			{
