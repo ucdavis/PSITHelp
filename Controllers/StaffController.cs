@@ -252,7 +252,16 @@ namespace ITHelp.Controllers
                 ErrorMessage = "Work Order not found";
                 return RedirectToAction(nameof(Index));
             }
+            var DecreaseComment = new Actions
+            {
+                WOId = woToUpdate.Id,
+                Date = DateTime.Now,
+                Text = $"Difficulty/weight lowered: From: {woToUpdate.Difficulty}",
+                SubmittedBy = GetTechId(),
+            };
             woToUpdate.Difficulty = woToUpdate.Difficulty - 1;
+
+            _context.Add(DecreaseComment);
             await _context.SaveChangesAsync();
             Message = "Difficulty decreased";
             return RedirectToAction(nameof(Details), new { woToUpdate.Id });
@@ -315,6 +324,12 @@ namespace ITHelp.Controllers
                 ErrorMessage = "Comment cannot be blank";
                 return RedirectToAction(nameof(Details), new {id});
             }
+            if(comment.Length > 8000)
+            {
+                ErrorMessage = $"Comment is too long. Please reduce number of characters; Comment length {comment.Length}; Attempted comment: {comment}";
+				var workOrders = await _fullCall.FullWO().FirstOrDefaultAsync(m => m.Id == id);				
+				return View("Details", workOrders);
+			}
             var woToComment = await _context.WorkOrders.Include(w => w.Requester).Where(w => w.Id == id).FirstOrDefaultAsync();
 			if (woToComment == null)
 			{
