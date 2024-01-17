@@ -316,6 +316,28 @@ namespace ITHelp.Controllers
             return View(workOrders);
 		}
 
+        public async Task<IActionResult> Claim(int id)
+        {
+            var woToClaim = await _context.WorkOrders.Where(w => w.Id == id).FirstOrDefaultAsync();
+            if(woToClaim == null)
+            {
+                ErrorMessage = "Work Order not found";
+                return RedirectToAction(nameof(Index));
+            }
+            var oldTech = await _context.Employees.Where(e => e.Id == woToClaim.Technician).FirstOrDefaultAsync();
+            woToClaim.Technician = GetTechId();
+            await _notificationService.WorkOrderClaimed(woToClaim, oldTech, GetTechName());
+
+			if (ModelState.IsValid)
+			{				
+				await _context.SaveChangesAsync();
+				Message = "Work Order claimed";
+				return RedirectToAction(nameof(Details), new { id });
+			}
+			ErrorMessage = "Something went wrong";
+			return RedirectToAction(nameof(Details), new { id });
+		}
+
 		[HttpPost]
 		public async Task<IActionResult> AddComment(int id, string comment, string emailRequestor, int statusChange, string serviceTag)
 		{

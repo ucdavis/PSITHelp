@@ -113,8 +113,11 @@
 		}
 		<div class="col-sm-2"><a asp-action="ToggleReview" asp-route-id="@Model.Id" class="btn btn-warning">Toggle Review</a></div>
 		<div class="col-sm-2"><a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-info">Edit</a></div>
-		<div class="col-sm-2"><a asp-action="Merge" asp-route-id="@Model.Id" class="btn btn-info">Merge</a></div>
-
+		<div class="col-sm-2"><a asp-action="Merge" asp-route-id="@Model.Id" class="btn btn-info">Merge</a></div>		
+		@if (this.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value != Model.Technician)
+		{
+			<div class="col-sm-2"><a asp-action="Claim" asp-route-id="@Model.Id" class="btn btn-warning">Claim WO</a></div>
+		}
 	</div>
 
 	<div>

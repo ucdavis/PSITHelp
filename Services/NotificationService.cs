@@ -13,6 +13,7 @@ namespace ITHelp.Services
         Task WorkOrderMerged(WorkOrders parentWo, WorkOrders childWo, string techName);
         Task WorkOrderChangeTech(WorkOrders wo, Employee newTech);
         Task WorkOrderBulkReassign(List<WorkOrders> workOrders, Employee newTech);
+        Task WorkOrderClaimed(WorkOrders wo, Employee oldTech, string techName);
 
 	}
 
@@ -118,7 +119,18 @@ namespace ITHelp.Services
             _context.Add(secondNotice);
         }
 
-        public async Task WorkOrderBulkReassign(List<WorkOrders> workOrders, Employee newTech)
+        public async Task WorkOrderClaimed(WorkOrders wo, Employee oldTech, string techName)
+        {
+            var notice = new Notifications
+            {
+                WoId = wo.Id,
+                Email = oldTech.UCDEmail,
+                Message = $"Work Order {wo.Id} claimed by {techName}."
+            };
+            _context.Add(notice);
+        }
+
+		public async Task WorkOrderBulkReassign(List<WorkOrders> workOrders, Employee newTech)
         {
             var sbMessage = new StringBuilder();
             sbMessage.Append($"The tech for the following Work Order(s) has changed to {newTech.Name}:<br/><br/>");
