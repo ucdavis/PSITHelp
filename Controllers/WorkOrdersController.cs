@@ -202,7 +202,7 @@ namespace ITHelp.Controllers
 				_context.Add(woToCreate);
 				_context.Add(requestToCreate);
 				await _context.SaveChangesAsync();
-				await _notificationService.NewUserRequestCreated(woToCreate, tech.First().UCDEmail);
+				await _notificationService.NewUserRequestCreated(woToCreate, tech.First().UCDEmail, GetUserName());
 				await _context.SaveChangesAsync();
 				
                 Message = "New user requested";
@@ -257,7 +257,7 @@ namespace ITHelp.Controllers
             {
                 _context.Add(woToCreate);
                 await _context.SaveChangesAsync();
-                await _notificationService.WorkOrderCreated(woToCreate, tech.First().UCDEmail);
+                await _notificationService.WorkOrderCreated(woToCreate, tech.First().UCDEmail, GetUserName());
                 await _context.SaveChangesAsync();
                 if(vm.UpdateContact)
                 {

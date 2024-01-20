@@ -5,11 +5,11 @@ namespace ITHelp.Services
 {
     public interface INotificationService
     {
-        Task WorkOrderCreated(WorkOrders wo, string techEmail);
-		Task NewUserRequestCreated(WorkOrders wo, string techEmail);
+        Task WorkOrderCreated(WorkOrders wo, string techEmail, string RequesterName);
+		Task NewUserRequestCreated(WorkOrders wo, string techEmail, string RequesterName);
 		Task WorkOrderCommentByClient(WorkOrders wo);
-        Task WorkOrderCommentByTech(WorkOrders wo, Actions action);
-        Task WorkOrderClosedByTech(WorkOrders wo, Actions action);
+        Task WorkOrderCommentByTech(WorkOrders wo, Actions action, string TechName);
+        Task WorkOrderClosedByTech(WorkOrders wo, Actions action, string TechName);
         Task WorkOrderMerged(WorkOrders parentWo, WorkOrders childWo, string techName);
         Task WorkOrderChangeTech(WorkOrders wo, Employee newTech);
         Task WorkOrderBulkReassign(List<WorkOrders> workOrders, Employee newTech);
@@ -26,24 +26,24 @@ namespace ITHelp.Services
             _context = context;
         }
 
-        public async Task WorkOrderCreated(WorkOrders wo, string techEmail)
+        public async Task WorkOrderCreated(WorkOrders wo, string techEmail, string RequesterName)
         {
             var notice = new Notifications
             {
                 WoId = wo.Id,
                 Email = techEmail,
-                Message = "Work Order Submitted"
+                Message = $"New Work Order Submitted by {RequesterName}."
             };
             _context.Add(notice);
         }
 
-		public async Task NewUserRequestCreated(WorkOrders wo, string techEmail)
+		public async Task NewUserRequestCreated(WorkOrders wo, string techEmail, string RequesterName)
 		{
 			var notice = new Notifications
 			{
 				WoId = wo.Id,
 				Email = techEmail,
-				Message = "New User Request Created"
+				Message = $"New User Request created by {RequesterName}."
 			};
 			_context.Add(notice);
 		}
@@ -54,28 +54,28 @@ namespace ITHelp.Services
 			{
 				WoId = wo.Id,
 				Email = wo.Tech.UCDEmail,
-				Message = "Work Order commented by client"
+				Message = "Work Order commented by client."
 			};
 			_context.Add(notice);
 		}
         
-        public async Task WorkOrderCommentByTech(WorkOrders wo, Actions action)
+        public async Task WorkOrderCommentByTech(WorkOrders wo, Actions action, string TechName)
         {
             var notice = new Notifications
             {
                 WoId = wo.Id,
                 Email = wo.Requester.UCDEmail,
-                Message = $"Work Order comment by tech: {action.Text}"
+                Message = $"Work Order comment by {TechName}: {action.Text}"
             };
             _context.Add(notice);
         }
-		public async Task WorkOrderClosedByTech(WorkOrders wo, Actions action)
+		public async Task WorkOrderClosedByTech(WorkOrders wo, Actions action, string TechName)
 		{
 			var notice = new Notifications
 			{
 				WoId = wo.Id,
 				Email = wo.Requester.UCDEmail,
-				Message = $"Work Order completed by tech: {action.Text}"
+				Message = $"Work Order completed by {TechName}: {action.Text}"
 			};
 			_context.Add(notice);
 		}
@@ -86,7 +86,7 @@ namespace ITHelp.Services
             {
                 WoId = parentWo.Id,
                 Email = parentWo.Tech.UCDEmail,
-                Message = $"{techName} Merged the following work orders: Parent: {parentWo.Id} Child: {childWo.Id}",
+                Message = $"{techName} merged the following work orders: Parent: {parentWo.Id} Child: {childWo.Id}",
             };
             _context.Add(notice);
             if(parentWo.Technician != childWo.Technician)
@@ -95,7 +95,7 @@ namespace ITHelp.Services
 				{
 					WoId = parentWo.Id,
 					Email = childWo.Tech.UCDEmail,
-					Message = $"{techName} Merged the following work orders: Parent: {parentWo.Id} Child: {childWo.Id}",
+					Message = $"{techName} merged the following work orders: Parent: {parentWo.Id} Child: {childWo.Id}",
 				};
                 _context.Add(secondNotice);
 			}

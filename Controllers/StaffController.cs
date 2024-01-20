@@ -375,11 +375,11 @@ namespace ITHelp.Controllers
             }
             if(emailRequestor == "Yes" && statusChange != 4)
             {
-                await _notificationService.WorkOrderCommentByTech(woToComment, newAction);
+                await _notificationService.WorkOrderCommentByTech(woToComment, newAction, GetTechName());
             }
             else if(statusChange == 4)
             {
-                await _notificationService.WorkOrderClosedByTech(woToComment, newAction);
+                await _notificationService.WorkOrderClosedByTech(woToComment, newAction, GetTechName());
                 woToComment.Resolution = comment;
             }
 			if (ModelState.IsValid)
