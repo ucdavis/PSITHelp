@@ -4,9 +4,13 @@
 }
 <h1>Open Work Orders</h1>
 
+
 @await Html.PartialAsync("_StaffWOTable", @Model)
 
-
+<h4>Auto-refresh every 2 minutes. Last refresh: @DateTime.Now.TimeOfDay.ToString("hh\\:mm\\:ss")</h4>
+<div>
+    Allow refresh: <input type="checkbox" id="RefreshOk" name="RefreshOk" class="form-check-input bigCheckbox" checked /> (manually refresh to activate auto-refresh)
+</div>
 @section Scripts {
 
     <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
@@ -30,9 +34,17 @@
                 ],                
                 order: [[3, 'desc']]
             });
+
+            setTimeout(() => {
+                if ($("#RefreshOk").is(":checked")) {
+                    window.location.href = window.location.href;
+                }
+            }, 120000);
         });
 
     </script>
+
+   
 
 
 }
