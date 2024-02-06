@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Security.Claims;
 
 namespace ITHelp.Controllers
 {
@@ -171,10 +173,17 @@ namespace ITHelp.Controllers
             workOrderToUpdate.TechComments = updatedWo.TechComments;
 			if (workOrderToUpdate.Technician != updatedWo.Technician)
             {
+                var admin = GetAdminName();
                 var tech = await _context.Employees.Where(e => e.Id == updatedWo.Technician).FirstOrDefaultAsync();
-                await _notificationService.WorkOrderChangeTech(workOrderToUpdate, tech);
-				workOrderToUpdate.Technician = updatedWo.Technician;
-			}
+                await _notificationService.WorkOrderChangeTech(workOrderToUpdate, tech, admin);
+                var action = new Actions();
+                action.WOId = updatedWo.Id;
+                action.Date = DateTime.Now;
+                action.SubmittedBy = GetAdminId();
+                action.Text = $"{admin} updated Work Order: transfered from {workOrderToUpdate.Tech.Name} to {tech.Name}; Comment: {workOrderToUpdate.TechComments}";
+                workOrderToUpdate.Technician = updatedWo.Technician;
+                _context.Add(action);
+            }
             await _context.SaveChangesAsync();
             Message = "Updates saved";
             return RedirectToAction("Details","Staff",new {workOrderToUpdate.Id});
@@ -192,7 +201,18 @@ namespace ITHelp.Controllers
             var workOrdersToReassign = await _context.WorkOrders.Include(w => w.Tech).Where(w => reassign.Contains(w.Id)).ToListAsync();
 			var newTech = await _context.Employees.Where(e => e.Id == Technician).FirstOrDefaultAsync();
             await _notificationService.WorkOrderBulkReassign(workOrdersToReassign, newTech);
-            workOrdersToReassign.ForEach(w=> w.Technician = Technician);
+            foreach(var wo in workOrdersToReassign)
+            {
+                var newAction = new Actions
+                {
+                    WOId = wo.Id,
+                    Date = DateTime.Now,
+                    Text = $"{GetAdminName()} updated Work Order: transferred from {wo.Tech.Name} to {newTech.Name}",
+                    SubmittedBy = GetAdminId() ,
+                };
+                _context.Add(newAction);
+            }
+            workOrdersToReassign.ForEach(w=> w.Technician = Technician);            
             await _context.SaveChangesAsync();
             Message = "Work Order(s) reassigned";
             return RedirectToAction(nameof(BulkReassign));
@@ -314,5 +334,17 @@ namespace ITHelp.Controllers
 			return View(model);
 		}
 
-	}
+        private string GetAdminName()
+        {
+            var firstName = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName).Value;
+            var lastName = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Surname).Value;
+            return $"{firstName} {lastName}";
+        }
+
+        private string GetAdminId()
+        {
+            return User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value;
+        }
+
+    }
 }

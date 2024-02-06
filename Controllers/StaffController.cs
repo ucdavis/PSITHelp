@@ -319,16 +319,25 @@ namespace ITHelp.Controllers
         public async Task<IActionResult> Claim(int id)
         {
             var woToClaim = await _context.WorkOrders.Where(w => w.Id == id).FirstOrDefaultAsync();
+            var techId = GetTechId();
             if(woToClaim == null)
             {
                 ErrorMessage = "Work Order not found";
                 return RedirectToAction(nameof(Index));
             }
             var oldTech = await _context.Employees.Where(e => e.Id == woToClaim.Technician).FirstOrDefaultAsync();
-            woToClaim.Technician = GetTechId();
+            woToClaim.Technician = techId;
             await _notificationService.WorkOrderClaimed(woToClaim, oldTech, GetTechName());
+            var newAction = new Actions
+            {
+                WOId = woToClaim.Id,
+                Date = DateTime.Now,
+                Text = $"Work Order claimed by {GetTechName()} from {oldTech.Name}.",
+                SubmittedBy = techId
+            };
+            _context.Add(newAction);
 
-			if (ModelState.IsValid)
+            if (ModelState.IsValid)
 			{				
 				await _context.SaveChangesAsync();
 				Message = "Work Order claimed";

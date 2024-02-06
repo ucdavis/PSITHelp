@@ -11,7 +11,7 @@ namespace ITHelp.Services
         Task WorkOrderCommentByTech(WorkOrders wo, Actions action, string TechName);
         Task WorkOrderClosedByTech(WorkOrders wo, Actions action, string TechName);
         Task WorkOrderMerged(WorkOrders parentWo, WorkOrders childWo, string techName);
-        Task WorkOrderChangeTech(WorkOrders wo, Employee newTech);
+        Task WorkOrderChangeTech(WorkOrders wo, Employee newTech, string adminName);
         Task WorkOrderBulkReassign(List<WorkOrders> workOrders, Employee newTech);
         Task WorkOrderClaimed(WorkOrders wo, Employee oldTech, string techName);
 
@@ -101,20 +101,20 @@ namespace ITHelp.Services
 			}
         }
 
-        public async Task WorkOrderChangeTech(WorkOrders wo, Employee newTech)
+        public async Task WorkOrderChangeTech(WorkOrders wo, Employee newTech, string adminName)
         {
             var notice = new Notifications
             {
                 WoId = wo.Id,
                 Email = wo.Tech.UCDEmail,
-                Message = $"Work Order {wo.Id} transfered from you to {newTech.Name}; Comment: {wo.TechComments}"
+                Message = $"{adminName} updated Work Order {wo.Id}: transfered from you to {newTech.Name}; Comment: {wo.TechComments}"
             };
             _context.Add(notice);
             var secondNotice = new Notifications
             {
                 WoId = wo.Id,
                 Email = newTech.UCDEmail,
-                Message = $"Work Order {wo.Id} transfered from {wo.Tech.FirstName} to you; Comment: {wo.TechComments}"
+                Message = $"{adminName} updated Work Order {wo.Id}: transfered from {wo.Tech.FirstName} to you; Comment: {wo.TechComments}"
             };
             _context.Add(secondNotice);
         }
