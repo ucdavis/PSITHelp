@@ -30,6 +30,13 @@ namespace ITHelp.Models
 		[Display(Name = "Service Tag/Serial#")]
 		public string TagToSearch { get; set; }
 
+        [DataType(DataType.Date)]
+        [Display(Name = "Req. Before")]
+        public DateTime? StartDate { get; set; }
+        [DataType(DataType.Date)]
+        [Display(Name = "Req. After")]
+        public DateTime? EndDate { get; set; }
+
 
 
 		public static async Task<WorkOrderSearchViewModel> Create(ITHelpContext _Context, WorkOrderSearchViewModel vm, IFullCallService _helper)
@@ -66,6 +73,14 @@ namespace ITHelp.Models
 				if(!string.IsNullOrWhiteSpace(vm.TagToSearch))
 				{
 					woToSearch = woToSearch.Where(w => EF.Functions.Like(w.ComputerTag, "%" + vm.TagToSearch + "%"));
+				}
+				if(vm.StartDate != null)
+				{
+					woToSearch = woToSearch.Where(w => w.RequestDate.Value.Date <= vm.StartDate);
+				}
+				if(vm.EndDate != null)
+				{
+					woToSearch = woToSearch.Where(w => w.RequestDate.Value.Date >= vm.EndDate);
 				}
 
 				var viewModel = new WorkOrderSearchViewModel
