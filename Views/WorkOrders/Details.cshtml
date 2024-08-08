@@ -213,11 +213,9 @@
 
 		let stars = $(".star"); 
 		let output = $("#output"); 
-
-		// Funtion to update rating
+				
 		function setRating(n) {
-			//alert(n);
-			remove();
+			clear();
 			for (let i = 0; i < n; i++) {
 				if (n == 1) cls = "one";
 				else if (n == 2) cls = "two";
@@ -229,9 +227,8 @@
 			output.html("Rating is: " + n + "/5");
 			$("#Rating").val(n);
 		}
-
-		// To remove the pre-applied styling
-		function remove() {
+		
+		function clear() {
 			let i = 0;
 			while (i < 5) {
 				stars[i].className = "star";
