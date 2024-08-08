@@ -305,6 +305,12 @@ namespace ITHelp.Controllers
             return View("MyOpen",model);
         }
 
+        public async Task<IActionResult> MyRatedWO()
+        {
+            var model = await _context.WorkOrders.Where(w => w.Status == 4 && w.Technician == GetTechId() && w.Rating != null).ToListAsync();
+            return View(model);
+        }
+
 		public async Task<IActionResult> Details(int id)
 		{
 			var workOrders = await _fullCall.FullWO().FirstOrDefaultAsync(m => m.Id == id);
