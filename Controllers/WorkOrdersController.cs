@@ -14,7 +14,7 @@ using Microsoft.Data.SqlClient;
 
 namespace ITHelp.Controllers
 {
-	// TODO Implement rating system check out cdbootstrap https://www.devwares.com/docs/contrast/javascript/Installation/
+	
 	public class WorkOrdersController : SuperController
     {
         private readonly ITHelpContext _context;
