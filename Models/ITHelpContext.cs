@@ -36,12 +36,13 @@ namespace ITHelp.Models
         public virtual DbSet<AssignmentStats> AssignmentStats { get; set; }
         public virtual DbSet<UserReequestPermissionsSummary> UserReequestPermissionsSummary { get; set; }
         public virtual DbSet<NewUserRequest> NewUserRequests { get; set; }
+        public virtual DbSet<TechRatingSummary> TechRatingSummaries { get; set; }
 
 
 
 
 
-		public static ILoggerFactory GetLoggerFactory()
+        public static ILoggerFactory GetLoggerFactory()
         {
             IServiceCollection serviceCollection = new ServiceCollection();
             serviceCollection.AddLogging(builder =>

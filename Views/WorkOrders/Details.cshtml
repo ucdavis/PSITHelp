@@ -3,43 +3,6 @@
 @inject IConfiguration Configuration
 @model ITHelp.Models.WorkOrders
 
-<style>
-	.card {
-		max-width: 33rem;
-		background: #fff;
-		margin: 0 1rem;
-		padding: 1rem;
-		box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-		width: 100%;
-		border-radius: 0.5rem;
-	}
-
-
-	.star {
-		font-size: 4vh;
-		cursor: pointer;
-	}
-
-	.one {
-		color: rgb(255, 0, 0);
-	}
-
-	.two {
-		color: rgb(255, 106, 0);
-	}
-
-	.three {
-		color: rgb(251, 255, 120);
-	}
-
-	.four {
-		color: rgb(255, 255, 0);
-	}
-
-	.five {
-		color: rgb(24, 159, 14);
-	}
-</style>
 <div>
 	@if(Model.Status == 4 && Model.Rating == null)
 	{
@@ -54,28 +17,13 @@
 				<div class="card">
 					<div class="row border">
 						<div class="col">
-						<span onclick="gfg(1)"
-						  class="star one">
-						★
-					</span>
-					<span onclick="gfg(2)"
-						  class="star">
-						★
-					</span>
-					<span onclick="gfg(3)"
-						  class="star">
-						★
-					</span>
-					<span onclick="gfg(4)"
-						  class="star">
-						★
-					</span>
-					<span onclick="gfg(5)"
-						  class="star">
-						★
-					</span>
+							<span onclick="setRating(1)" class="star one">★</span>
+							<span onclick="setRating(2)" class="star">★</span>
+							<span onclick="setRating(3)" class="star">★</span>
+							<span onclick="setRating(4)" class="star">★</span>
+							<span onclick="setRating(5)"class="star">★</span>
 					</div>
-					</div>
+				</div>
 					<h3 id="output">
 						Rating is: 0/5
 					</h3>
@@ -176,29 +124,14 @@
 	{	<div class="form-group row">
 			<label asp-for="Rating" class="col-sm-3 col-form-label"></label>
 			<div class="col-sm-12">
-				<div class="card">
+				<div class="border">
 					<div class="row border">
 						<div class="col">
-							<span onclick="gfg(1)"
-								  class="star one">
-								★
-							</span>
-							<span onclick="gfg(2)"
-								  class="star">
-								★
-							</span>
-							<span onclick="gfg(3)"
-								  class="star">
-								★
-							</span>
-							<span onclick="gfg(4)"
-								  class="star">
-								★
-							</span>
-							<span onclick="gfg(5)"
-								  class="star">
-								★
-							</span>
+							<span class="star one">★</span>
+							<span class="star">★</span>
+							<span class="star">★</span>
+							<span class="star">★</span>
+							<span class="star">★</span>
 						</div>
 					</div>
 					<h3 class="collapse" id="output">
@@ -275,16 +208,15 @@
 	<script>
 		$(document).ready(function () {
 			var rating = $("#Rating").val();			
-			gfg(rating)
+			setRating(rating)
 		});
 
-		let stars =
-			document.getElementsByClassName("star");
-		let output =
-			document.getElementById("output");
+		let stars = $(".star"); 
+		let output = $("#output"); 
 
 		// Funtion to update rating
-		function gfg(n) {
+		function setRating(n) {
+			//alert(n);
 			remove();
 			for (let i = 0; i < n; i++) {
 				if (n == 1) cls = "one";
@@ -294,7 +226,7 @@
 				else if (n == 5) cls = "five";
 				stars[i].className = "star " + cls;
 			}
-			output.innerText = "Rating is: " + n + "/5";
+			output.html("Rating is: " + n + "/5");
 			$("#Rating").val(n);
 		}
 
@@ -306,5 +238,6 @@
 				i++;
 			}
 		}
+				
 	</script>
 }

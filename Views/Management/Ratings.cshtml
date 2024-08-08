@@ -1,0 +1,59 @@
+﻿@model ITHelp.Models.WorkOrderReviewsViewModel
+
+
+    <h1>Reviewed Work Orders</h1>
+
+@if(Model.workOrders != null && Model.workOrders.Any())
+{
+    <table class="table datatabe">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Title</th>
+                <th>Requested</th>
+                <th>Closed</th>
+                <th>Requester</th>
+                <th>Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var row in Model.workOrders)
+            {
+                <tr>
+                    <td><a asp-action="details" asp-route-id="@row.Id" asp-controller="Staff">@row.Id</a></td>
+                    <td>@row.Title</td>
+                    <td>@row.RequestDate</td>
+                    <td>@row.CloseDate</td>
+                    <td>@row.RequestorValue</td>
+                    <td>@row.Rating</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <hr />
+}
+@if(Model.ratingsSummary.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Average Rating</th>
+                <th># Rated</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ratingsSummary)
+            {
+                <tr>
+                    <td><a asp-action="RatingsForTech" asp-route-id="@item.Id">Review</a></td>
+                    <td>@item.Name</td>
+                    <td>@item.AvgRating</td>
+                    <td>@item.NumRated</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
