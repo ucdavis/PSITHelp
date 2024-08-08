@@ -120,7 +120,7 @@
 			</div>
 		</div>
 	}
-	@if(Model.Status == 4 && Model.Rating != null)
+	@if (Model.Status == 4 && Model.Rating != null && (this.User.IsInRole("admin") || this.User.IsInRole("manager") || this.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value == Model.Technician || this.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value == Model.SubmittedBy))
 	{	<div class="form-group row">
 			<label asp-for="Rating" class="col-sm-3 col-form-label"></label>
 			<div class="col-sm-12">
