@@ -14,7 +14,7 @@ using Microsoft.Data.SqlClient;
 
 namespace ITHelp.Controllers
 {
-	// TODO Implement rating system check out cdbootstrap https://www.devwares.com/docs/contrast/javascript/Installation/
+	
 	public class WorkOrdersController : SuperController
     {
         private readonly ITHelpContext _context;
@@ -291,6 +291,14 @@ namespace ITHelp.Controllers
             }
             return false;
         }
+
+        public async Task<IActionResult> CompletedWorkOrders ()
+        {
+            var userId = GetUserId();
+            var model = await _fullCall.SummaryWO().Where(w => w.SubmittedBy == userId && w.Status == 4).ToListAsync();
+            return View(model);
+        }
+        
 
         private string GetUserId()
         {

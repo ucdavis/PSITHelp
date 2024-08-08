@@ -334,6 +334,18 @@ namespace ITHelp.Controllers
 			return View(model);
 		}
 
+        public async Task<IActionResult> Ratings ()
+        {
+            var model = await WorkOrderReviewsViewModel.Create(_context);
+            return View(model);
+        }
+
+        public async Task<IActionResult> RatingsForTech(string Id)
+        {
+            var model = await WorkOrderReviewsViewModel.CreateEmployee(_context, Id);
+            return View("Ratings", model);
+        }
+
         private string GetAdminName()
         {
             var firstName = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName).Value;

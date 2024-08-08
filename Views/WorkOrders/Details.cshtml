@@ -3,8 +3,44 @@
 @inject IConfiguration Configuration
 @model ITHelp.Models.WorkOrders
 
-
 <div>
+	@if(Model.Status == 4 && Model.Rating == null)
+	{
+		<form asp-action="SubmitRating">
+			<input type="hidden" asp-for="Id" />
+			<input type="hidden" asp-for="Rating" />
+		<hr />
+		<div class="col-sm-12">
+			<h2>Rate the Service for this Work Order</h2>
+				<div>Please rate by clicking the number of stars you feel the service deserved. You may also include any comments you would like to leave.</div>
+			<div>
+				<div class="card">
+					<div class="row border">
+						<div class="col">
+							<span onclick="setRating(1)" class="star one">★</span>
+							<span onclick="setRating(2)" class="star">★</span>
+							<span onclick="setRating(3)" class="star">★</span>
+							<span onclick="setRating(4)" class="star">★</span>
+							<span onclick="setRating(5)"class="star">★</span>
+					</div>
+				</div>
+					<h3 id="output">
+						Rating is: 0/5
+					</h3>
+				</div>
+			</div>
+			<div class="form-group">
+				<label asp-for="RateComment" class="col-sm-12 col-form-label">Comments</label>
+				<div class="col-sm-12 border">
+						<textarea class="form-control-plaintext" style="height: 100px;" asp-for="RateComment"></textarea>
+				</div>
+			</div>
+			<div>
+				<input class="btn btn-primary" type="submit" value="Submit Rating" />
+			</div>
+		</div>
+		</form>
+	}
 	<hr />
 	<div class="form-group row">
 		<label asp-for="Id" class="col-sm-3 col-form-label"></label>
@@ -84,6 +120,34 @@
 			</div>
 		</div>
 	}
+	@if (Model.Status == 4 && Model.Rating != null && (this.User.IsInRole("admin") || this.User.IsInRole("manager") || this.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value == Model.Technician || this.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value == Model.SubmittedBy))
+	{	<div class="form-group row">
+			<label asp-for="Rating" class="col-sm-3 col-form-label"></label>
+			<div class="col-sm-12">
+				<div class="border">
+					<div class="row border">
+						<div class="col">
+							<span class="star one">★</span>
+							<span class="star">★</span>
+							<span class="star">★</span>
+							<span class="star">★</span>
+							<span class="star">★</span>
+						</div>
+					</div>
+					<h3 class="collapse" id="output">
+						Rating is: 0/5
+					</h3>
+				</div>
+				<input type="hidden" asp-for="Rating" />
+			</div>
+		</div>		
+		<div class="form-group">
+			<label asp-for="RateComment" class="col-sm-12 col-form-label">Rate Comments</label>
+			<div class="col-sm-12 border">
+				<textarea class="form-control-plaintext" style="height: 50px;" readonly asp-for="RateComment"></textarea>
+			</div>
+		</div>
+	}
 	<div class="form-group row">
 		<label asp-for="CreatorValue" class="col-sm-3 col-form-label"></label>
 		<div class="col-sm-9">
@@ -136,3 +200,41 @@
 		</form>
 	</div>
 </div>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+	<script>
+		$(document).ready(function () {
+			var rating = $("#Rating").val();			
+			setRating(rating)
+		});
+
+		let stars = $(".star"); 
+		let output = $("#output"); 
+				
+		function setRating(n) {
+			clear();
+			for (let i = 0; i < n; i++) {
+				if (n == 1) cls = "one";
+				else if (n == 2) cls = "two";
+				else if (n == 3) cls = "three";
+				else if (n == 4) cls = "four";
+				else if (n == 5) cls = "five";
+				stars[i].className = "star " + cls;
+			}
+			output.html("Rating is: " + n + "/5");
+			$("#Rating").val(n);
+		}
+		
+		function clear() {
+			let i = 0;
+			while (i < 5) {
+				stars[i].className = "star";
+				i++;
+			}
+		}
+				
+	</script>
+}
