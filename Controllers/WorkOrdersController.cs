@@ -292,6 +292,14 @@ namespace ITHelp.Controllers
             return false;
         }
 
+        public async Task<IActionResult> CompletedWorkOrders ()
+        {
+            var userId = GetUserId();
+            var model = await _fullCall.SummaryWO().Where(w => w.SubmittedBy == userId && w.Status == 4).ToListAsync();
+            return View(model);
+        }
+        
+
         private string GetUserId()
         {
             return User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value;

@@ -1,0 +1,54 @@
+﻿@model IEnumerable<ITHelp.Models.WorkOrders>
+
+
+<h1>My Completed Work Orders</h1>
+
+
+<table class="table datatable">
+    <thead>
+        <tr>
+            <th></th>            
+            <th>Title</th>
+            <th>Full Text</th>
+            <th>Requested</th>
+            <th>Tech</th>
+            <th>Rating</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td><a asp-action="details" asp-route-id="@item.Id">@item.Id</a></td>
+            <td>@item.Title</td>
+            <td>@item.FullText</td>
+            <td data-sort="@item.RequestDate.Value.ToFileTimeUtc()">@item.RequestDate.Value.ToShortDateString()</td>
+            <td>@item.Tech?.Name</td>
+            <td>@item.Rating</td>           
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts {
+
+    <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>   
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css" />
+    
+    <script>
+        $(document).ready(function () {
+            $('.datatable').DataTable({
+                dom: 'lfrtip',
+                columnDefs: [{
+                    targets: 2,
+                    searchable: true,
+                    visible: false
+                }],
+                order: [[3 ,'desc']],
+                pageLength : 10,
+            });
+        });
+
+    </script>
+     
+
+}
